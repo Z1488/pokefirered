@@ -1,6 +1,8 @@
 #ifndef GUARD_SLOT_MACHINE_H
 #define GUARD_SLOT_MACHINE_H
 
-void PlaySlotMachine(u8, void *);
+#include "global.h"
+
+void PlaySlotMachine(u16, void (*)(void));
 
 #endif // GUARD_SLOT_MACHINE_H

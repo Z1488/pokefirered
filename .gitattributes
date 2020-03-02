@@ -10,6 +10,12 @@ Makefile text eol=lf
 *.inc text eol=lf
 *.sha1 text eol=lf
 *.sed text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
 
 *.png binary
 *.bin binary
+*.pcm binary
+
+*.h linguist-language=C
+*.inc linguist-language=Assembly

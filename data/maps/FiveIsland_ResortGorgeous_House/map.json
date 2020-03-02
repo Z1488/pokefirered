@@ -1,0 +1,71 @@
+{
+  "id": "MAP_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE",
+  "name": "FiveIsland_ResortGorgeous_House",
+  "layout": "LAYOUT_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE",
+  "music": "MUS_NANA45",
+  "region_map_section": "MAPSEC_RESORT_GORGEOUS",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_cycling": false,
+  "allow_escaping": false,
+  "allow_running": false,
+  "show_map_name": false,
+  "floor_number": 0,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": null,
+  "object_events": [
+    {
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 4,
+      "y": 4,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "movement_range_x": 1,
+      "movement_range_y": 1,
+      "trainer_type": 0,
+      "trainer_sight_or_berry_tree_id": 0,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_171EBE",
+      "flag": "FLAG_HIDE_RESORT_GORGEOUS_INSIDE_SELPHY"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 6,
+      "y": 2,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 1,
+      "movement_range_y": 1,
+      "trainer_type": 0,
+      "trainer_sight_or_berry_tree_id": 0,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_172062",
+      "flag": "FLAG_HIDE_SELPHYS_BUTLER"
+    }
+  ],
+  "warp_events": [
+    {
+      "x": 4,
+      "y": 7,
+      "elevation": 3,
+      "dest_map": "MAP_FIVE_ISLAND_RESORT_GORGEOUS",
+      "dest_warp_id": 1
+    }
+  ],
+  "coord_events": [],
+  "bg_events": [
+    {
+      "type": "bg_event_type_1",
+      "x": 9,
+      "y": 1,
+      "elevation": 0,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_1ACF2C"
+    },
+    {
+      "type": "bg_event_type_1",
+      "x": 8,
+      "y": 1,
+      "elevation": 0,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_1ACF2C"
+    }
+  ]
+}

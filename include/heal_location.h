@@ -1,6 +1,8 @@
 #ifndef GUARD_HEAL_LOCATION_H
 #define GUARD_HEAL_LOCATION_H
 
+#include "global.h"
+
 // Exported type declarations
 
 struct UnkStruct_0859F534 {
@@ -12,8 +14,8 @@ struct HealLocation
 {
     s8 group;
     s8 map;
-    u16 x;
-    u16 y;
+    s16 x;
+    s16 y;
 };
 
 // Exported RAM declarations

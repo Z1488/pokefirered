@@ -401,8 +401,8 @@ _0809DBD6:
 	movs r1, 0
 	movs r2, 0
 	bl ChangeBgY
-	bl sub_80F6C6C
-	bl sub_80F6C98
+	bl InitStandardTextBoxWindows
+	bl ResetBg0
 _0809DCA4:
 	lsls r0, r4, 3
 	ldr r1, _0809DD50 @ =gUnknown_83E22A0
@@ -491,9 +491,9 @@ sub_809DD60: @ 809DD60
 	bl CreateTask
 	ldr r0, _0809DD84 @ =sub_809FB70
 	bl SetMainCallback2
-	bl sub_812B234
+	bl HelpSystem_BackupSomeVariable
 	movs r0, 0x3
-	bl sub_812B1F0
+	bl HelpSystem_SetSomeVariable2
 	pop {r0}
 	bx r0
 	.align 2, 0
@@ -692,7 +692,7 @@ _0809DF24: .4byte 0x00001e10
 	thumb_func_start sub_809DF28
 sub_809DF28: @ 809DF28
 	push {lr}
-	ldr r0, _0809DF58 @ =gUnknown_2037AB8
+	ldr r0, _0809DF58 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -714,7 +714,7 @@ _0809DF50:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809DF58: .4byte gUnknown_2037AB8
+_0809DF58: .4byte gPaletteFade
 _0809DF5C: .4byte gUnknown_203998C
 _0809DF60: .4byte 0x00001e10
 	thumb_func_end sub_809DF28
@@ -837,7 +837,7 @@ _0809E044: .4byte 0x00001e10
 	thumb_func_start sub_809E048
 sub_809E048: @ 809E048
 	push {r4,r5,lr}
-	ldr r0, _0809E0A0 @ =gUnknown_2037AB8
+	ldr r0, _0809E0A0 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -868,14 +868,14 @@ _0809E06C:
 	ldr r0, [r4]
 	bl Free
 	str r5, [r4]
-	bl sub_812B248
+	bl HelpSystem_RestoreSomeVariable
 _0809E096:
 	movs r0, 0
 	pop {r4,r5}
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809E0A0: .4byte gUnknown_2037AB8
+_0809E0A0: .4byte gPaletteFade
 _0809E0A4: .4byte gUnknown_203998C
 _0809E0A8: .4byte 0x00001e2c
 _0809E0AC: .4byte 0x00001e3c
@@ -887,7 +887,7 @@ pokemon_transfer_to_pc_with_message: @ 809E0B4
 	push {r4,r5,lr}
 	sub sp, 0x10
 	movs r5, 0
-	bl sub_80CC7F8
+	bl IsDestinationBoxFull
 	lsls r0, 24
 	cmp r0, 0
 	bne _0809E104
@@ -932,7 +932,7 @@ _0809E104:
 	ldr r1, [r1]
 	bl StringCopy
 	ldr r4, _0809E1C0 @ =gStringVar3
-	bl get_unknown_box_id
+	bl GetPCBoxToSendMon
 	lsls r0, 24
 	lsrs r0, 24
 	bl GetBoxNamePtr
@@ -959,13 +959,13 @@ _0809E156:
 	bl StringExpandPlaceholders
 	movs r0, 0
 	movs r1, 0
-	bl sub_80F6EE4
+	bl DrawDialogueFrame
 	ldr r2, _0809E1D0 @ =gTextFlags
 	ldrb r0, [r2]
 	movs r1, 0x1
 	orrs r0, r1
 	strb r0, [r2]
-	bl sub_80F78A8
+	bl GetTextSpeedSetting
 	adds r3, r0, 0
 	lsls r3, 24
 	lsrs r3, 24
@@ -980,7 +980,7 @@ _0809E156:
 	movs r0, 0
 	movs r1, 0x2
 	adds r2, r4, 0
-	bl AddTextPrinterParametrized
+	bl AddTextPrinterParameterized2
 	movs r0, 0
 	movs r1, 0x3
 	bl CopyWindowToVram
@@ -1648,18 +1648,18 @@ sub_809E6B8: @ 809E6B8
 	lsrs r0, 24
 	bl sub_809E644
 	lsls r0, 16
-	ldr r2, _0809E6D8 @ =gUnknown_20375F8
+	ldr r2, _0809E6D8 @ =gPlttBufferFaded
 	lsrs r0, 15
 	adds r2, r0, r2
-	ldr r1, _0809E6DC @ =gUnknown_20371F8
+	ldr r1, _0809E6DC @ =gPlttBufferUnfaded
 	adds r0, r1
 	ldrh r0, [r0]
 	strh r0, [r2]
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809E6D8: .4byte gUnknown_20375F8
-_0809E6DC: .4byte gUnknown_20371F8
+_0809E6D8: .4byte gPlttBufferFaded
+_0809E6DC: .4byte gPlttBufferUnfaded
 	thumb_func_end sub_809E6B8
 
 	thumb_func_start sub_809E6E0
@@ -2789,7 +2789,7 @@ sub_809EF54: @ 809EF54
 	str r2, [sp]
 	movs r2, 0x38
 	movs r3, 0x25
-	bl AddPseudoFieldObject
+	bl AddPseudoObjectEvent
 	adds r1, r0, 0
 	lsls r1, 24
 	lsrs r1, 24
@@ -2849,7 +2849,7 @@ _0809EFEC: .4byte gUnknown_83E252C
 sub_809EFF0: @ 809EFF0
 	push {lr}
 	sub sp, 0xC
-	bl sub_809707C
+	bl LoadMonIconPalettes
 	ldr r0, _0809F038 @ =gUnknown_203998C
 	ldr r3, [r0]
 	ldr r1, _0809F03C @ =0x00001e34
@@ -2866,7 +2866,7 @@ sub_809EFF0: @ 809EFF0
 	str r2, [sp, 0x8]
 	movs r2, 0x38
 	movs r3, 0x28
-	bl sub_8096E18
+	bl CreateMonIcon
 	lsls r0, 24
 	lsrs r0, 24
 	ldr r2, _0809F048 @ =gSprites
@@ -3623,7 +3623,7 @@ sub_809F5C4: @ 809F5C4
 	push {r4,r5,lr}
 	sub sp, 0x10
 	movs r4, 0
-	ldr r1, _0809F61C @ =gUnknown_841621F
+	ldr r1, _0809F61C @ =gText_MaleSymbol
 	add r0, sp, 0xC
 	bl StringCopy
 	ldr r5, _0809F620 @ =gUnknown_203998C
@@ -3635,7 +3635,7 @@ sub_809F5C4: @ 809F5C4
 	beq _0809F614
 	cmp r0, 0xFE
 	bne _0809F5EE
-	ldr r1, _0809F628 @ =gUnknown_8416221
+	ldr r1, _0809F628 @ =gText_FemaleSymbol
 	add r0, sp, 0xC
 	bl StringCopy
 	movs r4, 0x1
@@ -3657,17 +3657,17 @@ _0809F5EE:
 	movs r1, 0x2
 	movs r2, 0x68
 	movs r3, 0x1
-	bl box_print
+	bl AddTextPrinterParameterized3
 _0809F614:
 	add sp, 0x10
 	pop {r4,r5}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809F61C: .4byte gUnknown_841621F
+_0809F61C: .4byte gText_MaleSymbol
 _0809F620: .4byte gUnknown_203998C
 _0809F624: .4byte 0x00001e36
-_0809F628: .4byte gUnknown_8416221
+_0809F628: .4byte gText_FemaleSymbol
 _0809F62C: .4byte 0x00001e13
 _0809F630: .4byte gUnknown_83E2428
 	thumb_func_end sub_809F5C4
@@ -4196,7 +4196,7 @@ _0809FA12:
 	adds r0, r6, 0
 	movs r1, 0x1
 	movs r2, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	adds r0, r4, 0x1
 	lsls r0, 24
 	lsrs r4, r0, 24
@@ -4317,7 +4317,7 @@ sub_809FAE4: @ 809FAE4
 	str r1, [sp, 0x8]
 	movs r1, 0
 	movs r3, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	ldr r0, [r5]
 	adds r0, r4
 	ldrb r0, [r0]
@@ -4490,7 +4490,7 @@ sub_809FC90: @ 809FC90
 	ldrb r2, [r1, 0x8]
 	movs r0, 0
 	str r0, [sp]
-	ldr r0, _0809FCB4 @ =sub_80568A8
+	ldr r0, _0809FCB4 @ =CB2_ReturnToFieldWithOpenMenu
 	str r0, [sp, 0x4]
 	movs r0, 0
 	movs r3, 0
@@ -4500,7 +4500,7 @@ sub_809FC90: @ 809FC90
 	bx r0
 	.align 2, 0
 _0809FCB0: .4byte gSaveBlock2Ptr
-_0809FCB4: .4byte sub_80568A8
+_0809FCB4: .4byte CB2_ReturnToFieldWithOpenMenu
 	thumb_func_end sub_809FC90
 
 	thumb_func_start sub_809FCB8
@@ -4512,7 +4512,7 @@ sub_809FCB8: @ 809FCB8
 	ldrb r2, [r1, 0x8]
 	movs r0, 0
 	str r0, [sp]
-	ldr r0, _0809FCDC @ =sub_80568A8
+	ldr r0, _0809FCDC @ =CB2_ReturnToFieldWithOpenMenu
 	str r0, [sp, 0x4]
 	movs r0, 0x1
 	movs r3, 0
@@ -4522,7 +4522,7 @@ sub_809FCB8: @ 809FCB8
 	bx r0
 	.align 2, 0
 _0809FCD8: .4byte gSaveBlock2Ptr
-_0809FCDC: .4byte sub_80568A8
+_0809FCDC: .4byte CB2_ReturnToFieldWithOpenMenu
 	thumb_func_end sub_809FCB8
 
 	thumb_func_start sub_809FCE0
@@ -4534,7 +4534,7 @@ sub_809FCE0: @ 809FCE0
 	ldrb r2, [r1, 0x8]
 	movs r0, 0
 	str r0, [sp]
-	ldr r0, _0809FD04 @ =sub_80568A8
+	ldr r0, _0809FD04 @ =CB2_ReturnToFieldWithOpenMenu
 	str r0, [sp, 0x4]
 	movs r0, 0x2
 	movs r3, 0
@@ -4544,7 +4544,7 @@ sub_809FCE0: @ 809FCE0
 	bx r0
 	.align 2, 0
 _0809FD00: .4byte gSaveBlock2Ptr
-_0809FD04: .4byte sub_80568A8
+_0809FD04: .4byte CB2_ReturnToFieldWithOpenMenu
 	thumb_func_end sub_809FCE0
 
 	thumb_func_start sub_809FD08
@@ -4556,7 +4556,7 @@ sub_809FD08: @ 809FD08
 	ldrb r2, [r1, 0x8]
 	movs r0, 0
 	str r0, [sp]
-	ldr r0, _0809FD2C @ =sub_80568A8
+	ldr r0, _0809FD2C @ =CB2_ReturnToFieldWithOpenMenu
 	str r0, [sp, 0x4]
 	movs r0, 0x3
 	movs r3, 0
@@ -4566,7 +4566,7 @@ sub_809FD08: @ 809FD08
 	bx r0
 	.align 2, 0
 _0809FD28: .4byte gSaveBlock2Ptr
-_0809FD2C: .4byte sub_80568A8
+_0809FD2C: .4byte CB2_ReturnToFieldWithOpenMenu
 	thumb_func_end sub_809FD08
 
 	thumb_func_start sub_809FD30
@@ -4578,7 +4578,7 @@ sub_809FD30: @ 809FD30
 	ldrb r2, [r1, 0x8]
 	movs r0, 0
 	str r0, [sp]
-	ldr r0, _0809FD54 @ =sub_80568A8
+	ldr r0, _0809FD54 @ =CB2_ReturnToFieldWithOpenMenu
 	str r0, [sp, 0x4]
 	movs r0, 0x4
 	movs r3, 0
@@ -4588,7 +4588,7 @@ sub_809FD30: @ 809FD30
 	bx r0
 	.align 2, 0
 _0809FD50: .4byte gSaveBlock2Ptr
-_0809FD54: .4byte sub_80568A8
+_0809FD54: .4byte CB2_ReturnToFieldWithOpenMenu
 	thumb_func_end sub_809FD30
 
 	.align 2, 0 @ Don't pad with nop.

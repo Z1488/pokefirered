@@ -22,7 +22,7 @@ sub_8079C08: @ 8079C08
 	lsrs r5, 24
 	ldr r0, _08079CD0 @ =gUnknown_83C2CE0
 	lsls r1, r5, 5
-	ldr r2, _08079CD4 @ =gUnknown_20373F8
+	ldr r2, _08079CD4 @ =gPlttBufferUnfaded + 0x200
 	adds r1, r2
 	ldr r2, _08079CD8 @ =0x04000008
 	bl CpuSet
@@ -101,7 +101,7 @@ _08079CC4:
 	.align 2, 0
 _08079CCC: .4byte Task_WeatherMain
 _08079CD0: .4byte gUnknown_83C2CE0
-_08079CD4: .4byte gUnknown_20373F8
+_08079CD4: .4byte gPlttBufferUnfaded + 0x200
 _08079CD8: .4byte 0x04000008
 _08079CDC: .4byte gUnknown_2037F34
 _08079CE0: .4byte 0x000006d5
@@ -122,7 +122,7 @@ weather_set: @ 8079CF4
 	beq _08079D0A
 	cmp r4, 0xD
 	beq _08079D0A
-	bl play_some_sound
+	bl PlayRainStoppingSoundEffect
 _08079D0A:
 	ldr r1, _08079D4C @ =gUnknown_2037F34
 	ldr r2, _08079D50 @ =0x000006d1
@@ -170,7 +170,7 @@ sub_8079D60: @ 8079D60
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	bl play_some_sound
+	bl PlayRainStoppingSoundEffect
 	ldr r0, _08079D84 @ =gUnknown_2037F34
 	movs r2, 0xDA
 	lsls r2, 3
@@ -193,7 +193,7 @@ sub_8079D8C: @ 8079D8C
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	bl play_some_sound
+	bl PlayRainStoppingSoundEffect
 	ldr r1, _08079DB8 @ =gUnknown_2037F34
 	movs r2, 0xDA
 	lsls r2, 3
@@ -690,7 +690,7 @@ _0807A144:
 _0807A164: .4byte gUnknown_2037F34
 _0807A168: .4byte 0x000006c6
 _0807A16C:
-	ldr r0, _0807A190 @ =gUnknown_2037AB8
+	ldr r0, _0807A190 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -711,7 +711,7 @@ _0807A18C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A190: .4byte gUnknown_2037AB8
+_0807A190: .4byte gPaletteFade
 _0807A194: .4byte 0x000006c1
 _0807A198: .4byte 0x000006c6
 	thumb_func_end sub_807A084
@@ -889,9 +889,9 @@ _0807A2CE:
 	cmp r0, 0
 	bne _0807A30C
 	lsls r1, r6, 1
-	ldr r0, _0807A304 @ =gUnknown_20371F8
+	ldr r0, _0807A304 @ =gPlttBufferUnfaded
 	adds r0, r1, r0
-	ldr r2, _0807A308 @ =gUnknown_20375F8
+	ldr r2, _0807A308 @ =gPlttBufferFaded
 	adds r1, r2
 	movs r2, 0x8
 	bl CpuFastSet
@@ -907,8 +907,8 @@ _0807A2CE:
 	b _0807A38A
 	.align 2, 0
 _0807A300: .4byte gUnknown_20386A4
-_0807A304: .4byte gUnknown_20371F8
-_0807A308: .4byte gUnknown_20375F8
+_0807A304: .4byte gPlttBufferUnfaded
+_0807A308: .4byte gPlttBufferFaded
 _0807A30C:
 	cmp r0, 0x2
 	beq _0807A320
@@ -940,12 +940,12 @@ _0807A336:
 	mov r8, r3
 	adds r4, 0x1
 	mov r12, r4
-	ldr r0, _0807A398 @ =gUnknown_20375F8
+	ldr r0, _0807A398 @ =gPlttBufferFaded
 	mov r10, r0
 _0807A34A:
 	adds r2, r6, 0
 	lsls r0, r2, 1
-	ldr r1, _0807A39C @ =gUnknown_20371F8
+	ldr r1, _0807A39C @ =gPlttBufferUnfaded
 	adds r0, r1
 	ldr r1, [r0]
 	lsls r0, r1, 27
@@ -983,15 +983,15 @@ _0807A38A:
 	bcc _0807A2CE
 	b _0807A3B6
 	.align 2, 0
-_0807A398: .4byte gUnknown_20375F8
-_0807A39C: .4byte gUnknown_20371F8
+_0807A398: .4byte gPlttBufferFaded
+_0807A39C: .4byte gPlttBufferUnfaded
 _0807A3A0:
 	cmp r0, 0
 	blt _0807A3B6
 	lsls r1, r4, 5
-	ldr r0, _0807A3C8 @ =gUnknown_20371F8
+	ldr r0, _0807A3C8 @ =gPlttBufferUnfaded
 	adds r0, r1, r0
-	ldr r2, _0807A3CC @ =gUnknown_20375F8
+	ldr r2, _0807A3CC @ =gPlttBufferFaded
 	adds r1, r2
 	mov r3, r9
 	lsls r2, r3, 3
@@ -1006,8 +1006,8 @@ _0807A3B6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A3C8: .4byte gUnknown_20371F8
-_0807A3CC: .4byte gUnknown_20375F8
+_0807A3C8: .4byte gPlttBufferUnfaded
+_0807A3CC: .4byte gPlttBufferFaded
 	thumb_func_end sub_807A294
 
 	thumb_func_start sub_807A3D0
@@ -1104,7 +1104,7 @@ _0807A472:
 _0807A47E:
 	adds r4, r6, 0
 	lsls r0, r4, 1
-	ldr r1, _0807A510 @ =gUnknown_20371F8
+	ldr r1, _0807A510 @ =gPlttBufferUnfaded
 	adds r0, r1
 	ldr r1, [r0]
 	lsls r0, r1, 27
@@ -1148,7 +1148,7 @@ _0807A47E:
 	lsls r0, 16
 	lsrs r6, r0, 16
 	lsls r4, 1
-	ldr r0, _0807A514 @ =gUnknown_20375F8
+	ldr r0, _0807A514 @ =gPlttBufferFaded
 	adds r4, r0
 	lsrs r1, 14
 	lsrs r2, 19
@@ -1177,8 +1177,8 @@ _0807A4FC:
 	bx r0
 	.align 2, 0
 _0807A50C: .4byte gUnknown_2038394
-_0807A510: .4byte gUnknown_20371F8
-_0807A514: .4byte gUnknown_20375F8
+_0807A510: .4byte gPlttBufferUnfaded
+_0807A514: .4byte gPlttBufferFaded
 	thumb_func_end sub_807A3D0
 
 	thumb_func_start sub_807A518
@@ -1231,12 +1231,12 @@ _0807A570:
 	movs r7, 0
 	adds r4, 0x1
 	mov r12, r4
-	ldr r0, _0807A5F0 @ =gUnknown_20375F8
+	ldr r0, _0807A5F0 @ =gPlttBufferFaded
 	mov r9, r0
 _0807A57A:
 	adds r4, r5, 0
 	lsls r0, r4, 1
-	ldr r1, _0807A5F4 @ =gUnknown_20371F8
+	ldr r1, _0807A5F4 @ =gPlttBufferUnfaded
 	adds r0, r1
 	ldr r1, [r0]
 	lsls r3, r1, 27
@@ -1294,8 +1294,8 @@ _0807A5D4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A5F0: .4byte gUnknown_20375F8
-_0807A5F4: .4byte gUnknown_20371F8
+_0807A5F0: .4byte gPlttBufferFaded
+_0807A5F4: .4byte gPlttBufferUnfaded
 	thumb_func_end sub_807A518
 
 	thumb_func_start sub_807A5F8
@@ -1349,7 +1349,7 @@ _0807A634:
 	mov r8, r0
 _0807A658:
 	lsls r5, r6, 1
-	ldr r0, _0807A6DC @ =gUnknown_20371F8
+	ldr r0, _0807A6DC @ =gPlttBufferUnfaded
 	adds r0, r5, r0
 	ldr r2, [r0]
 	lsls r4, r2, 27
@@ -1401,7 +1401,7 @@ _0807A658:
 	asrs r0, 4
 	adds r2, r0
 	lsls r2, 24
-	ldr r0, _0807A6E0 @ =gUnknown_20375F8
+	ldr r0, _0807A6E0 @ =gPlttBufferFaded
 	adds r5, r0
 	lsrs r2, 14
 	lsrs r3, 19
@@ -1415,8 +1415,8 @@ _0807A658:
 	bcc _0807A658
 	b _0807A6F8
 	.align 2, 0
-_0807A6DC: .4byte gUnknown_20371F8
-_0807A6E0: .4byte gUnknown_20375F8
+_0807A6DC: .4byte gPlttBufferUnfaded
+_0807A6E0: .4byte gPlttBufferFaded
 _0807A6E4:
 	lsls r0, r4, 20
 	lsrs r0, 16
@@ -1584,8 +1584,8 @@ _0807A810: .4byte 0x000006c6
 _0807A814: .4byte 0x000006c2
 	thumb_func_end sub_807A7C4
 
-	thumb_func_start fade_screen
-fade_screen: @ 807A818
+	thumb_func_start FadeScreen
+FadeScreen: @ 807A818
 	push {r4,r5,lr}
 	sub sp, 0x4
 	lsls r0, 24
@@ -1650,8 +1650,8 @@ _0807A882:
 	beq _0807A8C4
 	cmp r2, 0
 	beq _0807A896
-	ldr r0, _0807A8B4 @ =gUnknown_20375F8
-	ldr r1, _0807A8B8 @ =gUnknown_20371F8
+	ldr r0, _0807A8B4 @ =gPlttBufferFaded
+	ldr r1, _0807A8B8 @ =gPlttBufferUnfaded
 	movs r2, 0x80
 	lsls r2, 1
 	bl CpuFastSet
@@ -1671,8 +1671,8 @@ _0807A896:
 	strb r1, [r0]
 	b _0807A92C
 	.align 2, 0
-_0807A8B4: .4byte gUnknown_20375F8
-_0807A8B8: .4byte gUnknown_20371F8
+_0807A8B4: .4byte gPlttBufferFaded
+_0807A8B8: .4byte gPlttBufferUnfaded
 _0807A8BC: .4byte gUnknown_2037F34
 _0807A8C0: .4byte 0x000006c6
 _0807A8C4:
@@ -1735,10 +1735,10 @@ _0807A934: .4byte gUnknown_2037F34
 _0807A938: .4byte 0x000006c6
 _0807A93C: .4byte 0x000006ca
 _0807A940: .4byte 0x000006cb
-	thumb_func_end fade_screen
+	thumb_func_end FadeScreen
 
-	thumb_func_start sub_807A944
-sub_807A944: @ 807A944
+	thumb_func_start FieldWeather_StartFadingOutCreditsMap
+FieldWeather_StartFadingOutCreditsMap: @ 807A944
 	push {r4-r6,lr}
 	sub sp, 0x4
 	adds r6, r2, 0
@@ -1804,8 +1804,8 @@ _0807A9AE:
 	beq _0807A9F0
 	cmp r2, 0
 	beq _0807A9C2
-	ldr r0, _0807A9E0 @ =gUnknown_20375F8
-	ldr r1, _0807A9E4 @ =gUnknown_20371F8
+	ldr r0, _0807A9E0 @ =gPlttBufferFaded
+	ldr r1, _0807A9E4 @ =gPlttBufferUnfaded
 	movs r2, 0x80
 	lsls r2, 1
 	bl CpuFastSet
@@ -1824,8 +1824,8 @@ _0807A9C2:
 	strb r1, [r0]
 	b _0807AA56
 	.align 2, 0
-_0807A9E0: .4byte gUnknown_20375F8
-_0807A9E4: .4byte gUnknown_20371F8
+_0807A9E0: .4byte gPlttBufferFaded
+_0807A9E4: .4byte gPlttBufferUnfaded
 _0807A9E8: .4byte gUnknown_2037F34
 _0807A9EC: .4byte 0x000006c6
 _0807A9F0:
@@ -1887,10 +1887,10 @@ _0807AA60: .4byte gUnknown_2037F34
 _0807AA64: .4byte 0x000006c6
 _0807AA68: .4byte 0x000006ca
 _0807AA6C: .4byte 0x000006cb
-	thumb_func_end sub_807A944
+	thumb_func_end FieldWeather_StartFadingOutCreditsMap
 
-	thumb_func_start sub_807AA70
-sub_807AA70: @ 807AA70
+	thumb_func_start IsWeatherNotFadingIn
+IsWeatherNotFadingIn: @ 807AA70
 	ldr r0, _0807AA84 @ =gUnknown_2037F34
 	ldr r1, _0807AA88 @ =0x000006c6
 	adds r0, r1
@@ -1904,7 +1904,7 @@ sub_807AA70: @ 807AA70
 	.align 2, 0
 _0807AA84: .4byte gUnknown_2037F34
 _0807AA88: .4byte 0x000006c6
-	thumb_func_end sub_807AA70
+	thumb_func_end IsWeatherNotFadingIn
 
 	thumb_func_start sub_807AA8C
 sub_807AA8C: @ 807AA8C
@@ -1959,7 +1959,7 @@ _0807AAF0:
 	lsls r0, r4, 20
 	lsrs r4, r0, 16
 	movs r2, 0
-	ldr r6, _0807AB18 @ =gUnknown_20375F8
+	ldr r6, _0807AB18 @ =gPlttBufferFaded
 	ldr r0, _0807AB1C @ =0x000006c4
 	adds r3, r5, r0
 _0807AAFC:
@@ -1976,19 +1976,19 @@ _0807AAFC:
 	b _0807AB68
 	.align 2, 0
 _0807AB14: .4byte 0x000006ca
-_0807AB18: .4byte gUnknown_20375F8
+_0807AB18: .4byte gPlttBufferFaded
 _0807AB1C: .4byte 0x000006c4
 _0807AB20:
 	lsls r0, r4, 20
 	lsrs r4, r0, 16
 	lsls r1, r4, 1
-	ldr r0, _0807AB4C @ =gUnknown_20375F8
+	ldr r0, _0807AB4C @ =gPlttBufferFaded
 	adds r0, r1, r0
-	ldr r2, _0807AB50 @ =gUnknown_20371F8
+	ldr r2, _0807AB50 @ =gPlttBufferUnfaded
 	adds r1, r2
 	movs r2, 0x8
 	bl CpuFastSet
-	ldr r0, _0807AB54 @ =gUnknown_2037AB8
+	ldr r0, _0807AB54 @ =gPaletteFade
 	ldrh r2, [r0, 0x4]
 	lsls r2, 21
 	lsrs r2, 27
@@ -2000,9 +2000,9 @@ _0807AB20:
 	bl BlendPalette
 	b _0807AB68
 	.align 2, 0
-_0807AB4C: .4byte gUnknown_20375F8
-_0807AB50: .4byte gUnknown_20371F8
-_0807AB54: .4byte gUnknown_2037AB8
+_0807AB4C: .4byte gPlttBufferFaded
+_0807AB50: .4byte gPlttBufferUnfaded
+_0807AB54: .4byte gPaletteFade
 _0807AB58:
 	lsls r0, r4, 20
 	lsrs r4, r0, 16
@@ -2250,7 +2250,7 @@ _0807AD14:
 	movs r1, 0x7F
 	ands r0, r1
 	strh r0, [r2]
-	ldr r1, _0807AD5C @ =gUnknown_825E074
+	ldr r1, _0807AD5C @ =gSineTable
 	movs r3, 0
 	ldrsh r0, [r2, r3]
 	lsls r0, 1
@@ -2278,7 +2278,7 @@ _0807AD54:
 	strh r0, [r4]
 	b _0807ADA0
 	.align 2, 0
-_0807AD5C: .4byte gUnknown_825E074
+_0807AD5C: .4byte gSineTable
 _0807AD60: .4byte 0x0000073c
 _0807AD64: .4byte 0x0000073e
 _0807AD68:
@@ -2561,8 +2561,8 @@ _0807AF92:
 	bx r0
 	thumb_func_end sub_807AF00
 
-	thumb_func_start weather_get_current
-weather_get_current: @ 807AF98
+	thumb_func_start GetCurrentWeather
+GetCurrentWeather: @ 807AF98
 	ldr r0, _0807AFA4 @ =gUnknown_2037F34
 	movs r1, 0xDA
 	lsls r1, 3
@@ -2571,7 +2571,7 @@ weather_get_current: @ 807AF98
 	bx lr
 	.align 2, 0
 _0807AFA4: .4byte gUnknown_2037F34
-	thumb_func_end weather_get_current
+	thumb_func_end GetCurrentWeather
 
 	thumb_func_start SetRainStrengthFromSoundEffect
 SetRainStrengthFromSoundEffect: @ 807AFA8
@@ -2625,8 +2625,8 @@ _0807AFFA:
 _0807B000: .4byte 0x000006dd
 	thumb_func_end SetRainStrengthFromSoundEffect
 
-	thumb_func_start play_some_sound
-play_some_sound: @ 807B004
+	thumb_func_start PlayRainStoppingSoundEffect
+PlayRainStoppingSoundEffect: @ 807B004
 	push {lr}
 	bl IsSpecialSEPlaying
 	lsls r0, 24
@@ -2658,7 +2658,7 @@ _0807B03C:
 _0807B042:
 	pop {r0}
 	bx r0
-	thumb_func_end play_some_sound
+	thumb_func_end PlayRainStoppingSoundEffect
 
 	thumb_func_start sub_807B048
 sub_807B048: @ 807B048
@@ -2672,8 +2672,8 @@ _0807B054: .4byte gUnknown_2037F34
 _0807B058: .4byte 0x000006d3
 	thumb_func_end sub_807B048
 
-	thumb_func_start sub_807B05C
-sub_807B05C: @ 807B05C
+	thumb_func_start SetWeatherScreenFadeOut
+SetWeatherScreenFadeOut: @ 807B05C
 	ldr r0, _0807B068 @ =gUnknown_2037F34
 	ldr r1, _0807B06C @ =0x000006c6
 	adds r0, r1
@@ -2683,7 +2683,7 @@ sub_807B05C: @ 807B05C
 	.align 2, 0
 _0807B068: .4byte gUnknown_2037F34
 _0807B06C: .4byte 0x000006c6
-	thumb_func_end sub_807B05C
+	thumb_func_end SetWeatherScreenFadeOut
 
 	thumb_func_start sub_807B070
 sub_807B070: @ 807B070
@@ -2804,8 +2804,8 @@ sav1_get_weather_probably: @ 807B130
 _0807B13C: .4byte gSaveBlock1Ptr
 	thumb_func_end sav1_get_weather_probably
 
-	thumb_func_start sub_807B140
-sub_807B140: @ 807B140
+	thumb_func_start SetSav1WeatherFromCurrMapHeader
+SetSav1WeatherFromCurrMapHeader: @ 807B140
 	push {r4,r5,lr}
 	ldr r4, _0807B16C @ =gSaveBlock1Ptr
 	ldr r0, [r4]
@@ -2828,7 +2828,7 @@ sub_807B140: @ 807B140
 	.align 2, 0
 _0807B16C: .4byte gSaveBlock1Ptr
 _0807B170: .4byte gMapHeader
-	thumb_func_end sub_807B140
+	thumb_func_end SetSav1WeatherFromCurrMapHeader
 
 	thumb_func_start SetWeather
 SetWeather: @ 807B174

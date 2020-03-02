@@ -34,8 +34,8 @@ sub_806C888: @ 806C888
 	bx r0
 	thumb_func_end sub_806C888
 
-	thumb_func_start sub_806C8BC
-sub_806C8BC: @ 806C8BC
+	thumb_func_start FieldGetPlayerInput
+FieldGetPlayerInput: @ 806C8BC
 	push {r4-r7,lr}
 	mov r7, r8
 	push {r7}
@@ -46,14 +46,14 @@ sub_806C8BC: @ 806C8BC
 	mov r4, sp
 	adds r4, 0x2
 	strh r2, [r4]
-	ldr r0, _0806CA14 @ =gUnknown_2037078
+	ldr r0, _0806CA14 @ =gPlayerAvatar
 	ldrb r1, [r0, 0x2]
 	mov r8, r1
 	ldrb r6, [r0, 0x3]
 	bl cur_mapdata_block_role_at_player_pos
 	lsls r0, 24
 	lsrs r0, 24
-	bl sub_8059D70
+	bl MetatileBehavior_IsForcedMovementTile
 	lsls r0, 24
 	lsrs r7, r0, 24
 	bl ScriptContext1_IsScriptSetUp
@@ -89,7 +89,7 @@ _0806C914:
 	ands r0, r1
 	cmp r0, 0
 	beq _0806C940
-	ldr r0, _0806CA14 @ =gUnknown_2037078
+	ldr r0, _0806CA14 @ =gPlayerAvatar
 	ldrb r1, [r0]
 	movs r0, 0x40
 	ands r0, r1
@@ -100,14 +100,14 @@ _0806C914:
 	orrs r0, r1
 	strb r0, [r5]
 _0806C940:
-	ldr r0, _0806CA18 @ =gUnknown_203ADFA
+	ldr r0, _0806CA18 @ =gQuestLogState
 	ldrb r0, [r0]
 	subs r0, 0x2
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bls _0806C9D0
-	ldr r0, _0806CA14 @ =gUnknown_2037078
+	ldr r0, _0806CA14 @ =gPlayerAvatar
 	ldrb r1, [r0]
 	movs r0, 0x40
 	ands r0, r1
@@ -158,7 +158,7 @@ _0806C996:
 	orrs r0, r1
 	strb r0, [r5, 0x1]
 _0806C9AC:
-	ldr r0, _0806CA18 @ =gUnknown_203ADFA
+	ldr r0, _0806CA18 @ =gQuestLogState
 	ldrb r0, [r0]
 	subs r0, 0x2
 	lsls r0, 24
@@ -198,7 +198,7 @@ _0806C9E6:
 	orrs r0, r1
 	strb r0, [r5]
 _0806C9F6:
-	ldr r0, _0806CA18 @ =gUnknown_203ADFA
+	ldr r0, _0806CA18 @ =gQuestLogState
 	ldrb r0, [r0]
 	subs r0, 0x2
 	lsls r0, 24
@@ -213,8 +213,8 @@ _0806C9F6:
 	movs r0, 0x2
 	b _0806CA3E
 	.align 2, 0
-_0806CA14: .4byte gUnknown_2037078
-_0806CA18: .4byte gUnknown_203ADFA
+_0806CA14: .4byte gPlayerAvatar
+_0806CA18: .4byte gQuestLogState
 _0806CA1C:
 	movs r0, 0x80
 	ands r0, r1
@@ -244,7 +244,7 @@ _0806CA40:
 	pop {r4-r7}
 	pop {r0}
 	bx r0
-	thumb_func_end sub_806C8BC
+	thumb_func_end FieldGetPlayerInput
 
 	thumb_func_start sub_806CA4C
 sub_806CA4C: @ 806CA4C
@@ -320,7 +320,7 @@ sub_806CAC8: @ 806CAC8
 	sub sp, 0x8
 	adds r5, r0, 0
 	bl sub_8069A54
-	bl player_get_direction_lower_nybble
+	bl GetPlayerFacingDirection
 	lsls r0, 24
 	lsrs r6, r0, 24
 	mov r4, sp
@@ -332,14 +332,14 @@ sub_806CAC8: @ 806CAC8
 	movs r2, 0x2
 	ldrsh r1, [r4, r2]
 	movs r2, 0xFF
-	bl sub_8058F48
+	bl MapGridGetMetatileAttributeAt
 	mov r8, r0
 	mov r0, sp
 	movs r1, 0
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 16
 	lsrs r4, r0, 16
 	ldr r7, _0806CB70 @ =gUnknown_3005078
@@ -347,7 +347,7 @@ sub_806CAC8: @ 806CAC8
 	bl sub_806C888
 	ldrb r0, [r5, 0x2]
 	strb r0, [r7, 0x2]
-	bl sub_8081B30
+	bl CheckForTrainersWantingBattle
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -364,11 +364,11 @@ sub_806CAC8: @ 806CAC8
 	beq _0806CB74
 	movs r0, 0x5
 	bl IncrementGameStat
-	bl sub_8146CA4
-	bl sub_815D8C8
-	bl sub_80CC918
-	bl sub_80CB054
-	bl sub_80CCFBC
+	bl MENewsJisanStepCounter
+	bl IncrementRenewableHiddenItemStepCounter
+	bl RunMassageCooldownStepCounter
+	bl IncrementResortGorgeousStepCounter
+	bl BirthIslandDeoxysStepCounter
 	mov r0, sp
 	adds r1, r4, 0
 	adds r2, r6, 0
@@ -406,7 +406,7 @@ _0806CB88:
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r7, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 16
 	lsrs r4, r0, 16
 	mov r0, sp
@@ -431,7 +431,7 @@ _0806CBC0:
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r7, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 16
 	lsrs r4, r0, 16
 _0806CBD8:
@@ -441,7 +441,7 @@ _0806CBD8:
 	cmp r0, 0
 	beq _0806CBFC
 	mov r0, r8
-	bl sub_806D7F4
+	bl is_it_battle_time_3
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -464,7 +464,7 @@ _0806CBFC:
 	mov r0, sp
 	adds r1, r4, 0
 	adds r2, r6, 0
-	bl sub_806D964
+	bl mapheader_run_first_tag2_script_list_match_conditionally
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -484,7 +484,7 @@ _0806CC2C:
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 16
 	lsrs r4, r0, 16
 	ldrb r1, [r5]
@@ -541,7 +541,7 @@ _0806CC9C:
 	mov r0, sp
 	adds r1, r4, 0
 	adds r2, r6, 0
-	bl sub_806DCD0
+	bl map_warp_consider_2_to_inside
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -567,7 +567,7 @@ _0806CCCC:
 	bl FlagSet
 	movs r0, 0x6
 	bl PlaySE
-	bl sub_806F258
+	bl ShowStartMenu
 	b _0806CB6C
 	.align 2, 0
 _0806CCF4: .4byte gUnknown_3005078
@@ -577,7 +577,7 @@ _0806CCFC:
 	ands r0, r1
 	cmp r0, 0
 	beq _0806CD20
-	bl sub_810AD10
+	bl UseRegisteredKeyItemOnField
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -629,7 +629,7 @@ _0806CD54:
 	ldrb r0, [r4, 0x2]
 	cmp r0, 0
 	beq _0806CDC0
-	bl player_get_direction_lower_nybble
+	bl GetPlayerFacingDirection
 	lsls r0, 24
 	lsrs r0, 24
 	ldrb r1, [r4, 0x2]
@@ -708,7 +708,7 @@ sub_806CDF8: @ 806CDF8
 	bne _0806CE18
 	movs r0, 0x6
 	bl PlaySE
-	bl sub_806F258
+	bl ShowStartMenu
 	adds r0, r4, 0
 	bl DestroyTask
 _0806CE18:
@@ -775,7 +775,7 @@ cur_mapdata_block_role_at_player_pos: @ 806CE74
 	ldrsh r0, [r0, r1]
 	movs r2, 0
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 16
 	lsrs r0, 16
 	add sp, 0x4
@@ -798,10 +798,10 @@ sub_806CEA0: @ 806CEA0
 	movs r0, 0
 	b _0806CED2
 _0806CEB8:
-	ldr r0, _0806CED8 @ =gUnknown_8168CE4
+	ldr r0, _0806CED8 @ =PalletTown_PlayersHouse_2F_EventScript_PC
 	cmp r4, r0
 	beq _0806CECA
-	ldr r0, _0806CEDC @ =gUnknown_81A6955
+	ldr r0, _0806CEDC @ =EventScript_PC
 	cmp r4, r0
 	beq _0806CECA
 	movs r0, 0x5
@@ -815,8 +815,8 @@ _0806CED2:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0806CED8: .4byte gUnknown_8168CE4
-_0806CEDC: .4byte gUnknown_81A6955
+_0806CED8: .4byte PalletTown_PlayersHouse_2F_EventScript_PC
+_0806CEDC: .4byte EventScript_PC
 	thumb_func_end sub_806CEA0
 
 	thumb_func_start TryGetScriptOnPressingA
@@ -873,7 +873,7 @@ sub_806CF38: @ 806CF38
 	ldrsh r0, [r4, r1]
 	movs r2, 0x2
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 24
 	lsrs r0, 24
 	bl MetatileBehavior_IsCounter
@@ -884,7 +884,7 @@ sub_806CF38: @ 806CF38
 	ldrh r1, [r4, 0x2]
 	b _0806CF7E
 _0806CF60:
-	ldr r1, _0806CFA4 @ =gUnknown_826D2D8
+	ldr r1, _0806CFA4 @ =gDirectionToVectors
 	lsls r2, r6, 3
 	adds r0, r2, r1
 	ldr r3, [r0]
@@ -901,12 +901,12 @@ _0806CF60:
 	lsrs r1, 16
 _0806CF7E:
 	ldrb r2, [r4, 0x4]
-	bl GetFieldObjectIdByXYZ
+	bl GetObjectEventIdByXYZ
 	lsls r0, 24
 	lsrs r3, r0, 24
 	cmp r3, 0x10
 	beq _0806CF9E
-	ldr r1, _0806CFA8 @ =gMapObjects
+	ldr r1, _0806CFA8 @ =gObjectEvents
 	lsls r2, r3, 3
 	adds r0, r2, r3
 	lsls r0, 2
@@ -919,8 +919,8 @@ _0806CF9E:
 	movs r0, 0
 	b _0806CFDE
 	.align 2, 0
-_0806CFA4: .4byte gUnknown_826D2D8
-_0806CFA8: .4byte gMapObjects
+_0806CFA4: .4byte gDirectionToVectors
+_0806CFA8: .4byte gObjectEvents
 _0806CFAC:
 	movs r4, 0
 	ldr r1, _0806CFE4 @ =gUnknown_2031DEC
@@ -936,27 +936,27 @@ _0806CFBC:
 	adds r4, 0x1
 	cmp r4, 0x3
 	ble _0806CFB0
-	ldr r0, _0806CFE8 @ =gUnknown_3005074
+	ldr r0, _0806CFE8 @ =gSelectedObjectEvent
 	strb r3, [r0]
-	ldr r1, _0806CFEC @ =gUnknown_20370D2
+	ldr r1, _0806CFEC @ =gSpecialVar_LastTalked
 	adds r0, r2, r3
 	lsls r0, 2
 	adds r0, r5
 	ldrb r0, [r0, 0x8]
 	strh r0, [r1]
-	ldr r0, _0806CFF0 @ =gUnknown_20370D4
+	ldr r0, _0806CFF0 @ =gSpecialVar_Facing
 	strh r6, [r0]
 	adds r0, r3, 0
-	bl GetFieldObjectScriptPointerByFieldObjectId
+	bl GetObjectEventScriptPointerByObjectEventId
 _0806CFDE:
 	pop {r4-r6}
 	pop {r1}
 	bx r1
 	.align 2, 0
 _0806CFE4: .4byte gUnknown_2031DEC
-_0806CFE8: .4byte gUnknown_3005074
-_0806CFEC: .4byte gUnknown_20370D2
-_0806CFF0: .4byte gUnknown_20370D4
+_0806CFE8: .4byte gSelectedObjectEvent
+_0806CFEC: .4byte gSpecialVar_LastTalked
+_0806CFF0: .4byte gSpecialVar_Facing
 	thumb_func_end sub_806CF38
 
 	thumb_func_start sub_806CFF4
@@ -973,12 +973,12 @@ sub_806CFF4: @ 806CFF4
 	ldrh r0, [r4]
 	ldrh r1, [r4, 0x2]
 	ldrb r2, [r4, 0x4]
-	bl GetFieldObjectIdByXYZ
+	bl GetObjectEventIdByXYZ
 	lsls r0, 24
 	lsrs r5, r0, 24
 	cmp r5, 0x10
 	beq _0806D02A
-	ldr r2, _0806D098 @ =gMapObjects
+	ldr r2, _0806D098 @ =gObjectEvents
 	lsls r1, r5, 3
 	adds r0, r1, r5
 	lsls r0, 2
@@ -994,7 +994,7 @@ _0806D02A:
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D092
-	ldr r1, _0806D09C @ =gUnknown_826D2D8
+	ldr r1, _0806D09C @ =gDirectionToVectors
 	mov r0, r8
 	lsls r2, r0, 3
 	adds r0, r2, r1
@@ -1011,12 +1011,12 @@ _0806D02A:
 	lsls r1, 16
 	lsrs r1, 16
 	ldrb r2, [r4, 0x4]
-	bl GetFieldObjectIdByXYZ
+	bl GetObjectEventIdByXYZ
 	lsls r0, 24
 	lsrs r5, r0, 24
 	cmp r5, 0x10
 	beq _0806D092
-	ldr r2, _0806D098 @ =gMapObjects
+	ldr r2, _0806D098 @ =gObjectEvents
 	lsls r1, r5, 3
 	adds r0, r1, r5
 	lsls r0, 2
@@ -1031,9 +1031,9 @@ _0806D078:
 	bne _0806D0A0
 	adds r0, r6, r5
 	lsls r0, 2
-	ldr r1, _0806D098 @ =gMapObjects
+	ldr r1, _0806D098 @ =gObjectEvents
 	adds r0, r1
-	bl FieldObjectCheckIfSpecialAnimFinishedOrInactive
+	bl ObjectEventCheckHeldMovementStatus
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806D0A0
@@ -1041,23 +1041,23 @@ _0806D092:
 	movs r0, 0
 	b _0806D0C8
 	.align 2, 0
-_0806D098: .4byte gMapObjects
-_0806D09C: .4byte gUnknown_826D2D8
+_0806D098: .4byte gObjectEvents
+_0806D09C: .4byte gDirectionToVectors
 _0806D0A0:
-	ldr r0, _0806D0D4 @ =gUnknown_3005074
+	ldr r0, _0806D0D4 @ =gSelectedObjectEvent
 	strb r5, [r0]
-	ldr r4, _0806D0D8 @ =gUnknown_20370D2
-	ldr r1, _0806D0DC @ =gMapObjects
+	ldr r4, _0806D0D8 @ =gSpecialVar_LastTalked
+	ldr r1, _0806D0DC @ =gObjectEvents
 	adds r0, r6, r5
 	lsls r0, 2
 	adds r0, r1
 	ldrb r0, [r0, 0x8]
 	strh r0, [r4]
-	ldr r0, _0806D0E0 @ =gUnknown_20370D4
+	ldr r0, _0806D0E0 @ =gSpecialVar_Facing
 	mov r1, r8
 	strh r1, [r0]
 	adds r0, r5, 0
-	bl GetFieldObjectScriptPointerByFieldObjectId
+	bl GetObjectEventScriptPointerByObjectEventId
 	adds r1, r0, 0
 	ldrb r0, [r4]
 	bl GetRamScript
@@ -1069,10 +1069,10 @@ _0806D0C8:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0806D0D4: .4byte gUnknown_3005074
-_0806D0D8: .4byte gUnknown_20370D2
-_0806D0DC: .4byte gMapObjects
-_0806D0E0: .4byte gUnknown_20370D4
+_0806D0D4: .4byte gSelectedObjectEvent
+_0806D0D8: .4byte gSpecialVar_LastTalked
+_0806D0DC: .4byte gObjectEvents
+_0806D0E0: .4byte gSpecialVar_Facing
 	thumb_func_end sub_806CFF4
 
 	thumb_func_start sub_806D0E4
@@ -1093,18 +1093,18 @@ sub_806D0E4: @ 806D0E4
 	lsrs r2, 16
 	ldrb r3, [r0, 0x4]
 	adds r0, r4, 0
-	bl FindInvisibleMapObjectByPosition
+	bl FindInvisibleObjectEventByPosition
 	adds r5, r0, 0
 	cmp r5, 0
 	beq _0806D164
 	ldr r0, [r5, 0x8]
 	cmp r0, 0
 	bne _0806D120
-	ldr r0, _0806D11C @ =gUnknown_81C555B
+	ldr r0, _0806D11C @ =Test_EventScript_Sign
 	b _0806D1E6
 	.align 2, 0
 _0806D118: .4byte gMapHeader
-_0806D11C: .4byte gUnknown_81C555B
+_0806D11C: .4byte Test_EventScript_Sign
 _0806D120:
 	adds r0, r7, 0
 	adds r1, r6, 0
@@ -1152,25 +1152,25 @@ _0806D174:
 _0806D17A:
 	ldr r0, [r5, 0x8]
 	movs r1, 0x3
-	bl sub_80CC44C
+	bl GetHiddenItemAttr
 	lsls r0, 16
 	lsrs r0, 16
 	cmp r0, 0x1
 	beq _0806D164
 	ldr r0, [r5, 0x8]
 	movs r1, 0
-	bl sub_80CC44C
+	bl GetHiddenItemAttr
 	ldr r1, _0806D1C4 @ =gSpecialVar_0x8005
 	strh r0, [r1]
 	ldr r0, [r5, 0x8]
 	movs r1, 0x1
-	bl sub_80CC44C
-	ldr r4, _0806D1C8 @ =gUnknown_20370C0
+	bl GetHiddenItemAttr
+	ldr r4, _0806D1C8 @ =gSpecialVar_0x8004
 	strh r0, [r4]
 	ldr r0, [r5, 0x8]
 	movs r1, 0x2
-	bl sub_80CC44C
-	ldr r1, _0806D1CC @ =gUnknown_20370C4
+	bl GetHiddenItemAttr
+	ldr r1, _0806D1CC @ =gSpecialVar_0x8006
 	strh r0, [r1]
 	ldrh r0, [r4]
 	bl FlagGet
@@ -1178,22 +1178,22 @@ _0806D17A:
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806D164
-	ldr r0, _0806D1D0 @ =gUnknown_20370D4
+	ldr r0, _0806D1D0 @ =gSpecialVar_Facing
 	strh r6, [r0]
-	ldr r0, _0806D1D4 @ =gUnknown_81A6843
+	ldr r0, _0806D1D4 @ =EventScript_FoundHiddenItem
 	b _0806D1E6
 	.align 2, 0
 _0806D1C4: .4byte gSpecialVar_0x8005
-_0806D1C8: .4byte gUnknown_20370C0
-_0806D1CC: .4byte gUnknown_20370C4
-_0806D1D0: .4byte gUnknown_20370D4
-_0806D1D4: .4byte gUnknown_81A6843
+_0806D1C8: .4byte gSpecialVar_0x8004
+_0806D1CC: .4byte gSpecialVar_0x8006
+_0806D1D0: .4byte gSpecialVar_Facing
+_0806D1D4: .4byte EventScript_FoundHiddenItem
 _0806D1D8:
 	cmp r2, 0xFF
 	beq _0806D1E0
 	bl sub_8069A20
 _0806D1E0:
-	ldr r0, _0806D1EC @ =gUnknown_20370D4
+	ldr r0, _0806D1EC @ =gSpecialVar_Facing
 	strh r6, [r0]
 	ldr r0, [r5, 0x8]
 _0806D1E6:
@@ -1201,7 +1201,7 @@ _0806D1E6:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0806D1EC: .4byte gUnknown_20370D4
+_0806D1EC: .4byte gSpecialVar_Facing
 	thumb_func_end sub_806D0E4
 
 	thumb_func_start sub_806D1F0
@@ -1211,7 +1211,7 @@ sub_806D1F0: @ 806D1F0
 	lsrs r4, r1, 24
 	lsls r2, 24
 	lsrs r5, r2, 24
-	ldr r0, _0806D210 @ =gUnknown_20370D4
+	ldr r0, _0806D210 @ =gSpecialVar_Facing
 	strh r5, [r0]
 	adds r0, r4, 0
 	bl MetatileBehavior_IsPC
@@ -1219,25 +1219,25 @@ sub_806D1F0: @ 806D1F0
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D218
-	ldr r0, _0806D214 @ =gUnknown_81A6955
+	ldr r0, _0806D214 @ =EventScript_PC
 	b _0806D53E
 	.align 2, 0
-_0806D210: .4byte gUnknown_20370D4
-_0806D214: .4byte gUnknown_81A6955
+_0806D210: .4byte gSpecialVar_Facing
+_0806D214: .4byte EventScript_PC
 _0806D218:
 	adds r0, r4, 0
-	bl sub_805A134
+	bl MetatileBehavior_IsRegionMap
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D230
-	ldr r0, _0806D22C @ =gUnknown_81A6C32
+	ldr r0, _0806D22C @ =EventScript_WallTownMap
 	b _0806D53E
 	.align 2, 0
-_0806D22C: .4byte gUnknown_81A6C32
+_0806D22C: .4byte EventScript_WallTownMap
 _0806D230:
 	adds r0, r4, 0
-	bl sub_805A24C
+	bl MetatileBehavior_IsBookshelf
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1248,7 +1248,7 @@ _0806D230:
 _0806D244: .4byte gUnknown_81A7606
 _0806D248:
 	adds r0, r4, 0
-	bl sub_805A260
+	bl MetatileBehavior_IsPokeMartShelf
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1259,7 +1259,7 @@ _0806D248:
 _0806D25C: .4byte gUnknown_81A760F
 _0806D260:
 	adds r0, r4, 0
-	bl sub_805A44C
+	bl MetatileBehavior_IsFood
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1270,7 +1270,7 @@ _0806D260:
 _0806D274: .4byte gUnknown_81A7618
 _0806D278:
 	adds r0, r4, 0
-	bl sub_805A558
+	bl MetatileBehavior_IsImpressiveMachine
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1281,7 +1281,7 @@ _0806D278:
 _0806D28C: .4byte gUnknown_81A7633
 _0806D290:
 	adds r0, r4, 0
-	bl sub_805A474
+	bl MetatileBehavior_IsBlueprints
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1292,7 +1292,7 @@ _0806D290:
 _0806D2A4: .4byte gUnknown_81A763C
 _0806D2A8:
 	adds r0, r4, 0
-	bl sub_805A56C
+	bl MetatileBehavior_IsVideoGame
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1303,7 +1303,7 @@ _0806D2A8:
 _0806D2BC: .4byte gUnknown_81A7621
 _0806D2C0:
 	adds r0, r4, 0
-	bl sub_805A580
+	bl MetatileBehavior_IsBurglary
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1314,7 +1314,7 @@ _0806D2C0:
 _0806D2D4: .4byte gUnknown_81A7645
 _0806D2D8:
 	adds r0, r4, 0
-	bl sub_805A4C4
+	bl MetatileBehavior_IsComputer
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1325,15 +1325,15 @@ _0806D2D8:
 _0806D2EC: .4byte gUnknown_81A762A
 _0806D2F0:
 	adds r0, r4, 0
-	bl sub_805A594
+	bl MetatileBehavior_IsMBA3
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D308
-	ldr r0, _0806D304 @ =gUnknown_81C549C
+	ldr r0, _0806D304 @ =TrainerTower_EventScript_ShowTime
 	b _0806D53E
 	.align 2, 0
-_0806D304: .4byte gUnknown_81C549C
+_0806D304: .4byte TrainerTower_EventScript_ShowTime
 _0806D308:
 	adds r0, r4, 0
 	adds r1, r5, 0
@@ -1348,7 +1348,7 @@ _0806D308:
 _0806D31C: .4byte gUnknown_81A764E
 _0806D320:
 	adds r0, r4, 0
-	bl sub_805A374
+	bl MetatileBehavior_IsCabinet
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1359,7 +1359,7 @@ _0806D320:
 _0806D334: .4byte gUnknown_81A7657
 _0806D338:
 	adds r0, r4, 0
-	bl sub_805A388
+	bl MetatileBehavior_IsKitchen
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1370,7 +1370,7 @@ _0806D338:
 _0806D34C: .4byte gUnknown_81A7660
 _0806D350:
 	adds r0, r4, 0
-	bl sub_805A39C
+	bl MetatileBehavior_IsDresser
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1381,7 +1381,7 @@ _0806D350:
 _0806D364: .4byte gUnknown_81A7669
 _0806D368:
 	adds r0, r4, 0
-	bl sub_805A3B0
+	bl MetatileBehavior_IsSnacks
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1392,7 +1392,7 @@ _0806D368:
 _0806D37C: .4byte gUnknown_81A7672
 _0806D380:
 	adds r0, r4, 0
-	bl sub_805A488
+	bl MetatileBehavior_IsPainting
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1403,7 +1403,7 @@ _0806D380:
 _0806D394: .4byte gUnknown_81A767B
 _0806D398:
 	adds r0, r4, 0
-	bl sub_805A49C
+	bl MetatileBehavior_IsPowerPlantMachine
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1414,7 +1414,7 @@ _0806D398:
 _0806D3AC: .4byte gUnknown_81A7684
 _0806D3B0:
 	adds r0, r4, 0
-	bl sub_805A4B0
+	bl MetatileBehavior_IsTelephone
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1425,7 +1425,7 @@ _0806D3B0:
 _0806D3C4: .4byte gUnknown_81A768D
 _0806D3C8:
 	adds r0, r4, 0
-	bl sub_805A4D8
+	bl MetatileBehavior_IsAdvertisingPoster
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1436,7 +1436,7 @@ _0806D3C8:
 _0806D3DC: .4byte gUnknown_81A7696
 _0806D3E0:
 	adds r0, r4, 0
-	bl sub_805A4EC
+	bl MetatileBehavior_IsTastyFood
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1447,7 +1447,7 @@ _0806D3E0:
 _0806D3F4: .4byte gUnknown_81A769F
 _0806D3F8:
 	adds r0, r4, 0
-	bl sub_805A500
+	bl MetatileBehavior_IsTrashBin
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1458,7 +1458,7 @@ _0806D3F8:
 _0806D40C: .4byte gUnknown_81A76A8
 _0806D410:
 	adds r0, r4, 0
-	bl sub_805A514
+	bl MetatileBehavior_IsCup
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1469,7 +1469,7 @@ _0806D410:
 _0806D424: .4byte gUnknown_81A76B1
 _0806D428:
 	adds r0, r4, 0
-	bl sub_805A528
+	bl MetatileBehavior_ReturnFalse_19
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1480,7 +1480,7 @@ _0806D428:
 _0806D43C: .4byte gUnknown_81A76BA
 _0806D440:
 	adds r0, r4, 0
-	bl sub_805A52C
+	bl MetatileBehavior_ReturnFalse_20
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1491,7 +1491,7 @@ _0806D440:
 _0806D454: .4byte gUnknown_81A76C3
 _0806D458:
 	adds r0, r4, 0
-	bl sub_805A530
+	bl MetatileBehavior_IsBlinkingLights
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1502,7 +1502,7 @@ _0806D458:
 _0806D46C: .4byte gUnknown_81A76CC
 _0806D470:
 	adds r0, r4, 0
-	bl sub_805A544
+	bl MetatileBehavior_IsMB9F
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1514,18 +1514,18 @@ _0806D484: .4byte gUnknown_81A76D5
 _0806D488:
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A3D8
+	bl MetatileBehavior_IsPlayerFacingMB_8D
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D4A0
-	ldr r0, _0806D49C @ =gUnknown_81BBFD8
+	ldr r0, _0806D49C @ =CableClub_EventScript_81BBFD8
 	b _0806D53E
 	.align 2, 0
-_0806D49C: .4byte gUnknown_81BBFD8
+_0806D49C: .4byte CableClub_EventScript_81BBFD8
 _0806D4A0:
 	adds r0, r4, 0
-	bl sub_805A410
+	bl MetatileBehavior_IsQuestionnaire
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1537,18 +1537,18 @@ _0806D4B4: .4byte gUnknown_81A7702
 _0806D4B8:
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A3F4
+	bl MetatileBehavior_IsPlayerFacingBattleRecords
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D4D0
-	ldr r0, _0806D4CC @ =gUnknown_81BB8A7
+	ldr r0, _0806D4CC @ =CableClub_EventScript_ShowBattleRecords
 	b _0806D53E
 	.align 2, 0
-_0806D4CC: .4byte gUnknown_81BB8A7
+_0806D4CC: .4byte CableClub_EventScript_ShowBattleRecords
 _0806D4D0:
 	adds r0, r4, 0
-	bl sub_805A424
+	bl MetatileBehavior_IsIndigoPlateauMark
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1560,7 +1560,7 @@ _0806D4D0:
 _0806D4E8: .4byte gUnknown_81A76F0
 _0806D4EC:
 	adds r0, r4, 0
-	bl sub_805A438
+	bl MetatileBehavior_IsIndigoPlateauMark2
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1573,7 +1573,7 @@ _0806D504: .4byte gUnknown_81A76F9
 _0806D508:
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A290
+	bl MetatileBehavior_IsPlayerFacingPokeMartSign
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1586,7 +1586,7 @@ _0806D520: .4byte gUnknown_81A76DE
 _0806D524:
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A274
+	bl MetatileBehavior_IsPlayerFacingPokemonCenterSign
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1610,7 +1610,7 @@ sub_806D548: @ 806D548
 	lsls r1, 24
 	lsrs r4, r1, 24
 	adds r0, r4, 0
-	bl sub_8059CC8
+	bl MetatileBehavior_IsSemiDeepWater
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1620,10 +1620,10 @@ sub_806D548: @ 806D548
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D570
-	ldr r0, _0806D56C @ =gUnknown_81A6B0D
+	ldr r0, _0806D56C @ =EventScript_CurrentTooFast
 	b _0806D5E2
 	.align 2, 0
-_0806D56C: .4byte gUnknown_81A6B0D
+_0806D56C: .4byte EventScript_CurrentTooFast
 _0806D570:
 	ldr r0, _0806D59C @ =0x00000824
 	bl FlagGet
@@ -1641,11 +1641,11 @@ _0806D570:
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D5A4
-	ldr r0, _0806D5A0 @ =gUnknown_81A6AC8
+	ldr r0, _0806D5A0 @ =EventScript_UseSurf
 	b _0806D5E2
 	.align 2, 0
 _0806D59C: .4byte 0x00000824
-_0806D5A0: .4byte gUnknown_81A6AC8
+_0806D5A0: .4byte EventScript_UseSurf
 _0806D5A4:
 	adds r0, r4, 0
 	bl MetatileBehavior_IsWaterfall
@@ -1664,16 +1664,16 @@ _0806D5A4:
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D5D8
-	ldr r0, _0806D5D4 @ =gUnknown_81BE2B7
+	ldr r0, _0806D5D4 @ =EventScript_InteractWithWaterfall
 	b _0806D5E2
 	.align 2, 0
 _0806D5D0: .4byte 0x00000826
-_0806D5D4: .4byte gUnknown_81BE2B7
+_0806D5D4: .4byte EventScript_InteractWithWaterfall
 _0806D5D8:
-	ldr r0, _0806D5DC @ =gUnknown_81BE2FF
+	ldr r0, _0806D5DC @ =EventScript_81BE2FF
 	b _0806D5E2
 	.align 2, 0
-_0806D5DC: .4byte gUnknown_81BE2FF
+_0806D5DC: .4byte EventScript_81BE2FF
 _0806D5E0:
 	movs r0, 0
 _0806D5E2:
@@ -1713,7 +1713,7 @@ sub_806D5E8: @ 806D5E8
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806D650
-	ldr r0, _0806D654 @ =gUnknown_2037078
+	ldr r0, _0806D654 @ =gPlayerAvatar
 	ldrb r1, [r0]
 	movs r0, 0x40
 	ands r0, r1
@@ -1721,11 +1721,11 @@ sub_806D5E8: @ 806D5E8
 	bne _0806D658
 	lsls r0, r6, 24
 	lsrs r0, 24
-	bl sub_8059D70
+	bl MetatileBehavior_IsForcedMovementTile
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806D658
-	bl sub_80830B8
+	bl UpdateRepelCounter
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1734,7 +1734,7 @@ _0806D650:
 	movs r0, 0x1
 	b _0806D65A
 	.align 2, 0
-_0806D654: .4byte gUnknown_2037078
+_0806D654: .4byte gPlayerAvatar
 _0806D658:
 	movs r0, 0
 _0806D65A:
@@ -1787,12 +1787,12 @@ sub_806D698: @ 806D698
 	bl InUnionRoom
 	cmp r0, 0x1
 	beq _0806D72C
-	ldr r0, _0806D6E0 @ =gUnknown_203ADFA
+	ldr r0, _0806D6E0 @ =gQuestLogState
 	ldrb r0, [r0]
 	cmp r0, 0x2
 	beq _0806D72C
 	bl AdjustFriendship_step
-	ldr r0, _0806D6E4 @ =gUnknown_2037078
+	ldr r0, _0806D6E4 @ =gPlayerAvatar
 	ldrb r1, [r0]
 	movs r0, 0x40
 	ands r0, r1
@@ -1800,7 +1800,7 @@ sub_806D698: @ 806D698
 	bne _0806D720
 	lsls r0, r4, 24
 	lsrs r0, 24
-	bl sub_8059D70
+	bl MetatileBehavior_IsForcedMovementTile
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806D720
@@ -1813,34 +1813,34 @@ sub_806D698: @ 806D698
 	bl ScriptContext1_SetupScript
 	b _0806D730
 	.align 2, 0
-_0806D6E0: .4byte gUnknown_203ADFA
-_0806D6E4: .4byte gUnknown_2037078
+_0806D6E0: .4byte gQuestLogState
+_0806D6E4: .4byte gPlayerAvatar
 _0806D6E8: .4byte gUnknown_81A8CED
 _0806D6EC:
-	bl overworld_poison_step
+	bl DoPoisonFieldEffect_step
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806D704
-	ldr r0, _0806D700 @ =gUnknown_81A8DFD
+	ldr r0, _0806D700 @ =EventScript_PoisonWhiteOut
 	bl ScriptContext1_SetupScript
 	b _0806D730
 	.align 2, 0
-_0806D700: .4byte gUnknown_81A8DFD
+_0806D700: .4byte EventScript_PoisonWhiteOut
 _0806D704:
-	bl sub_80463B8
+	bl ShouldEggHatch
 	lsls r0, 24
 	cmp r0, 0
 	beq _0806D720
 	movs r0, 0xD
 	bl IncrementGameStat
-	ldr r0, _0806D71C @ =gUnknown_81BF546
+	ldr r0, _0806D71C @ =EventScript_EggHatch
 	bl ScriptContext1_SetupScript
 	b _0806D730
 	.align 2, 0
-_0806D71C: .4byte gUnknown_81BF546
+_0806D71C: .4byte EventScript_EggHatch
 _0806D720:
-	bl sub_80A0F0C
+	bl SafariZoneTakeStep
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1872,7 +1872,7 @@ _0806D748: .4byte 0x00004021
 AdjustFriendship_step: @ 806D74C
 	push {r4,r5,lr}
 	ldr r0, _0806D780 @ =0x00004021
-	bl sub_806E454
+	bl GetVarPointer
 	ldrh r1, [r0]
 	adds r1, 0x1
 	strh r1, [r0]
@@ -1901,8 +1901,8 @@ _0806D780: .4byte 0x00004021
 _0806D784: .4byte gPlayerParty
 	thumb_func_end AdjustFriendship_step
 
-	thumb_func_start overworld_poison_timer_set
-overworld_poison_timer_set: @ 806D788
+	thumb_func_start ClearPoisonStepCounter
+ClearPoisonStepCounter: @ 806D788
 	push {lr}
 	ldr r0, _0806D798 @ =0x00004022
 	movs r1, 0
@@ -1911,17 +1911,17 @@ overworld_poison_timer_set: @ 806D788
 	bx r0
 	.align 2, 0
 _0806D798: .4byte 0x00004022
-	thumb_func_end overworld_poison_timer_set
+	thumb_func_end ClearPoisonStepCounter
 
-	thumb_func_start overworld_poison_step
-overworld_poison_step: @ 806D79C
+	thumb_func_start DoPoisonFieldEffect_step
+DoPoisonFieldEffect_step: @ 806D79C
 	push {r4,lr}
 	ldr r0, _0806D7D8 @ =gMapHeader
 	ldrb r0, [r0, 0x17]
 	cmp r0, 0x9
 	beq _0806D7E0
 	ldr r0, _0806D7DC @ =0x00004022
-	bl sub_806E454
+	bl GetVarPointer
 	adds r4, r0, 0
 	ldrh r0, [r4]
 	adds r0, 0x1
@@ -1933,7 +1933,7 @@ overworld_poison_step: @ 806D79C
 	lsls r0, 16
 	cmp r0, 0
 	bne _0806D7E0
-	bl overworld_poison
+	bl DoPoisonFieldEffect
 	cmp r0, 0x1
 	beq _0806D7E0
 	cmp r0, 0x1
@@ -1951,25 +1951,25 @@ _0806D7E2:
 	pop {r4}
 	pop {r1}
 	bx r1
-	thumb_func_end overworld_poison_step
+	thumb_func_end DoPoisonFieldEffect_step
 
-	thumb_func_start sub_806D7E8
-sub_806D7E8: @ 806D7E8
+	thumb_func_start RestartWildEncounterImmunitySteps
+RestartWildEncounterImmunitySteps: @ 806D7E8
 	push {lr}
-	bl sub_80832D4
+	bl ResetEncounterRateModifiers
 	pop {r0}
 	bx r0
-	thumb_func_end sub_806D7E8
+	thumb_func_end RestartWildEncounterImmunitySteps
 
-	thumb_func_start sub_806D7F4
-sub_806D7F4: @ 806D7F4
+	thumb_func_start is_it_battle_time_3
+is_it_battle_time_3: @ 806D7F4
 	push {lr}
-	bl sub_80833B0
+	bl TryStandardWildEncounter
 	lsls r0, 24
 	lsrs r0, 24
 	pop {r1}
 	bx r1
-	thumb_func_end sub_806D7F4
+	thumb_func_end is_it_battle_time_3
 
 	thumb_func_start sub_806D804
 sub_806D804: @ 806D804
@@ -2057,7 +2057,7 @@ sub_806D898: @ 806D898
 	lsrs r4, r0, 24
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A274
+	bl MetatileBehavior_IsPlayerFacingPokemonCenterSign
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2067,7 +2067,7 @@ sub_806D898: @ 806D898
 _0806D8B6:
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl sub_805A290
+	bl MetatileBehavior_IsPlayerFacingPokeMartSign
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2076,7 +2076,7 @@ _0806D8B6:
 	b _0806D902
 _0806D8CA:
 	adds r0, r4, 0
-	bl sub_805A424
+	bl MetatileBehavior_IsIndigoPlateauMark
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2085,7 +2085,7 @@ _0806D8CA:
 	b _0806D902
 _0806D8DC:
 	adds r0, r4, 0
-	bl sub_805A438
+	bl MetatileBehavior_IsIndigoPlateauMark2
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2094,7 +2094,7 @@ _0806D8DC:
 	b _0806D902
 _0806D8EE:
 	adds r0, r4, 0
-	bl sub_805A360
+	bl MetatileBehavior_IsSignpost
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2114,7 +2114,7 @@ sub_806D908: @ 806D908
 	push {lr}
 	lsls r1, 24
 	lsrs r1, 24
-	ldr r2, _0806D924 @ =gUnknown_20370D4
+	ldr r2, _0806D924 @ =gSpecialVar_Facing
 	strh r1, [r2]
 	bl ScriptContext1_SetupScript
 	bl sub_80699E0
@@ -2122,7 +2122,7 @@ sub_806D908: @ 806D908
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806D924: .4byte gUnknown_20370D4
+_0806D924: .4byte gSpecialVar_Facing
 	thumb_func_end sub_806D908
 
 	thumb_func_start sub_806D928
@@ -2139,7 +2139,7 @@ sub_806D928: @ 806D928
 	lsrs r2, 16
 	ldrb r3, [r0, 0x4]
 	adds r0, r4, 0
-	bl FindInvisibleMapObjectByPosition
+	bl FindInvisibleObjectEventByPosition
 	cmp r0, 0
 	bne _0806D950
 	movs r0, 0
@@ -2150,17 +2150,17 @@ _0806D950:
 	ldr r0, [r0, 0x8]
 	cmp r0, 0
 	bne _0806D958
-	ldr r0, _0806D960 @ =gUnknown_81C555B
+	ldr r0, _0806D960 @ =Test_EventScript_Sign
 _0806D958:
 	pop {r4}
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0806D960: .4byte gUnknown_81C555B
+_0806D960: .4byte Test_EventScript_Sign
 	thumb_func_end sub_806D928
 
-	thumb_func_start sub_806D964
-sub_806D964: @ 806D964
+	thumb_func_start mapheader_run_first_tag2_script_list_match_conditionally
+mapheader_run_first_tag2_script_list_match_conditionally: @ 806D964
 	push {r4-r7,lr}
 	mov r7, r10
 	mov r6, r9
@@ -2195,7 +2195,7 @@ sub_806D964: @ 806D964
 	adds r1, r5, 0
 	adds r2, r7, 0
 	bl sub_806DC54
-	bl sub_807E438
+	bl DoWarp
 	movs r0, 0x1
 	b _0806DA02
 	.align 2, 0
@@ -2209,7 +2209,7 @@ _0806D9BC:
 	cmp r0, 0x1
 	bne _0806DA00
 	movs r4, 0
-	ldr r0, _0806D9FC @ =gUnknown_2037078
+	ldr r0, _0806D9FC @ =gPlayerAvatar
 	ldrb r1, [r0]
 	movs r0, 0x6
 	ands r0, r1
@@ -2230,7 +2230,7 @@ _0806D9E2:
 	movs r0, 0x1
 	b _0806DA02
 	.align 2, 0
-_0806D9FC: .4byte gUnknown_2037078
+_0806D9FC: .4byte gPlayerAvatar
 _0806DA00:
 	movs r0, 0
 _0806DA02:
@@ -2241,7 +2241,7 @@ _0806DA02:
 	pop {r4-r7}
 	pop {r1}
 	bx r1
-	thumb_func_end sub_806D964
+	thumb_func_end mapheader_run_first_tag2_script_list_match_conditionally
 
 	thumb_func_start sub_806DA10
 sub_806DA10: @ 806DA10
@@ -2273,7 +2273,7 @@ sub_806DA10: @ 806DA10
 	lsls r0, r5, 24
 	lsrs r4, r0, 24
 	adds r0, r4, 0
-	bl sub_8059BF0
+	bl MetatileBehavior_IsEscalator
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2286,7 +2286,7 @@ sub_806DA10: @ 806DA10
 _0806DA68: .4byte gMapHeader
 _0806DA6C:
 	adds r0, r4, 0
-	bl sub_805A158
+	bl MetatileBehavior_ReturnFalse_12
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2296,7 +2296,7 @@ _0806DA6C:
 	b _0806DAEE
 _0806DA82:
 	adds r0, r4, 0
-	bl MetatileBehavior_IsLavaridge1FWarp
+	bl MetatileBheavior_IsMB_68
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2306,7 +2306,7 @@ _0806DA82:
 	b _0806DAEE
 _0806DA98:
 	adds r0, r4, 0
-	bl MetatileBehavior_IsAquaHideoutWarp
+	bl MetatileBehavior_IsRegularWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2316,7 +2316,7 @@ _0806DA98:
 	b _0806DAEE
 _0806DAAE:
 	adds r0, r4, 0
-	bl sub_805A184
+	bl MetatileBehavior_IsUnionRoomWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2326,20 +2326,20 @@ _0806DAAE:
 	b _0806DAEE
 _0806DAC4:
 	adds r0, r4, 0
-	bl sub_805A1C4
+	bl MetatileBehavior_IsFallWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _0806DAE4
-	bl sub_80559E4
-	ldr r0, _0806DAE0 @ =gUnknown_81C1361
+	bl ResetInitialPlayerAvatarState
+	ldr r0, _0806DAE0 @ =EventScript_1C1361
 	bl ScriptContext1_SetupScript
 	movs r0, 0x1
 	b _0806DAEE
 	.align 2, 0
-_0806DAE0: .4byte gUnknown_81C1361
+_0806DAE0: .4byte EventScript_1C1361
 _0806DAE4:
-	bl sub_807E438
+	bl DoWarp
 	movs r0, 0x1
 	b _0806DAEE
 _0806DAEC:
@@ -2362,49 +2362,49 @@ sub_806DAF4: @ 806DAF4
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_8059C78
+	bl MetatileBehavior_IsLadder
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_8059BF0
+	bl MetatileBehavior_IsEscalator
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_8059C8C
+	bl MetatileBehavior_IsCaveDoor
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_805A158
+	bl MetatileBehavior_ReturnFalse_12
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl MetatileBehavior_IsLavaridge1FWarp
+	bl MetatileBheavior_IsMB_68
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl MetatileBehavior_IsAquaHideoutWarp
+	bl MetatileBehavior_IsRegularWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_805A1C4
+	bl MetatileBehavior_IsFallWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	beq _0806DB7C
 	adds r0, r4, 0
-	bl sub_805A184
+	bl MetatileBehavior_IsUnionRoomWarp
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2435,23 +2435,23 @@ _0806DB98:
 	lsls r0, 24
 	lsrs r4, r0, 24
 	adds r0, r4, 0
-	bl sub_8059C20
+	bl MetatileBehavior_IsUnknownWarp6D
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806DBCC
 	adds r0, r4, 0
-	bl sub_8059C48
+	bl MetatileBehavior_IsUnknownWarp6F
 	b _0806DBC6
 _0806DBB0:
 	lsls r0, 24
 	lsrs r4, r0, 24
 	adds r0, r4, 0
-	bl sub_8059C0C
+	bl MetatileBehavior_IsUnknownWarp6C
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806DBCC
 	adds r0, r4, 0
-	bl sub_8059C34
+	bl MetatileBehavior_IsUnknownWarp6E
 _0806DBC6:
 	lsls r0, 24
 	cmp r0, 0
@@ -2491,12 +2491,12 @@ _0806DBF2:
 _0806DBFC:
 	lsls r0, 24
 	lsrs r0, 24
-	bl sub_8059D04
+	bl MetatileBehavior_IsNorthArrowWarp
 	b _0806DC22
 _0806DC06:
 	lsls r0, 24
 	lsrs r0, 24
-	bl sub_8059D18
+	bl MetatileBehavior_IsSouthArrowWarp
 	b _0806DC22
 _0806DC10:
 	lsls r0, 24
@@ -2572,7 +2572,7 @@ _0806DC78:
 	bl sub_805550C
 	ldrb r0, [r4, 0x7]
 	ldrb r1, [r4, 0x6]
-	bl get_mapheader_by_bank_and_number
+	bl Overworld_GetMapHeaderByGroupAndId
 	ldr r1, [r0, 0x4]
 	ldrb r0, [r4, 0x5]
 	ldr r1, [r1, 0x8]
@@ -2600,8 +2600,8 @@ _0806DCC4:
 _0806DCCC: .4byte gSaveBlock1Ptr
 	thumb_func_end sub_806DC54
 
-	thumb_func_start sub_806DCD0
-sub_806DCD0: @ 806DCD0
+	thumb_func_start map_warp_consider_2_to_inside
+map_warp_consider_2_to_inside: @ 806DCD0
 	push {r4-r7,lr}
 	adds r6, r0, 0
 	lsls r1, 16
@@ -2638,7 +2638,7 @@ sub_806DCD0: @ 806DCD0
 	adds r1, r4, 0
 	adds r2, r6, 0
 	bl sub_806DC54
-	bl sub_807E4DC
+	bl DoDoorWarp
 	movs r0, 0x1
 	b _0806DD32
 	.align 2, 0
@@ -2649,7 +2649,7 @@ _0806DD32:
 	pop {r4-r7}
 	pop {r1}
 	bx r1
-	thumb_func_end sub_806DCD0
+	thumb_func_end map_warp_consider_2_to_inside
 
 	thumb_func_start map_warp_check
 map_warp_check: @ 806DD38
@@ -2799,7 +2799,7 @@ sub_806DE28: @ 806DE28
 	ldrsh r0, [r5, r1]
 	movs r2, 0x12
 	ldrsh r1, [r5, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	cmp r0, 0x66
 	bne _0806DE64
 	movs r0, 0x25
@@ -2809,7 +2809,7 @@ sub_806DE28: @ 806DE28
 	ldr r2, [r4]
 	ldrb r1, [r2, 0x5]
 	ldrb r2, [r2, 0x4]
-	bl RemoveFieldObjectByLocalIdAndMap
+	bl RemoveObjectEventByLocalIdAndMap
 	ldrb r0, [r5, 0x8]
 	ldr r2, [r4]
 	ldrb r1, [r2, 0x5]
@@ -2839,7 +2839,7 @@ sub_806DE70: @ 806DE70
 	asrs r0, 16
 	lsrs r6, r1, 16
 	asrs r1, 16
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	cmp r0, 0x20
 	bne _0806DEB8
 	cmp r5, 0
@@ -2892,8 +2892,8 @@ sub_806DEC4: @ 806DEC4
 _0806DEE8: .4byte gMapHeader
 	thumb_func_end sub_806DEC4
 
-	thumb_func_start FindInvisibleMapObjectByPosition
-FindInvisibleMapObjectByPosition: @ 806DEEC
+	thumb_func_start FindInvisibleObjectEventByPosition
+FindInvisibleObjectEventByPosition: @ 806DEEC
 	push {r4-r7,lr}
 	lsls r1, 16
 	lsrs r7, r1, 16
@@ -2938,7 +2938,7 @@ _0806DF34:
 	pop {r4-r7}
 	pop {r1}
 	bx r1
-	thumb_func_end FindInvisibleMapObjectByPosition
+	thumb_func_end FindInvisibleObjectEventByPosition
 
 	thumb_func_start dive_warp
 dive_warp: @ 806DF3C
@@ -2952,7 +2952,7 @@ dive_warp: @ 806DF3C
 	bne _0806DF74
 	lsls r0, r5, 24
 	lsrs r0, 24
-	bl sub_8059FCC
+	bl MetatileBehavior_IsMB19
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806DF74
@@ -2971,7 +2971,7 @@ _0806DF70: .4byte gMapHeader
 _0806DF74:
 	lsls r0, r5, 24
 	lsrs r0, 24
-	bl sub_8059FB0
+	bl MetatileBehavior_IsDeepOrSemiDeepWater
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -2990,7 +2990,7 @@ _0806DF98:
 	cmp r0, 0
 	beq _0806DFB0
 	bl sub_8055A08
-	bl sp13E_warp_to_last_warp
+	bl DoDiveWarp
 	movs r0, 0xE2
 	bl PlaySE
 	movs r0, 0x1
@@ -3017,7 +3017,7 @@ sub_806DFB8: @ 806DFB8
 	ldrsh r0, [r0, r1]
 	movs r2, 0
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	lsls r0, 24
 	lsrs r5, r0, 24
 	ldr r0, _0806E010 @ =gMapHeader
@@ -3025,7 +3025,7 @@ sub_806DFB8: @ 806DFB8
 	cmp r0, 0x5
 	bne _0806E014
 	adds r0, r5, 0
-	bl sub_8059FCC
+	bl MetatileBehavior_IsMB19
 	lsls r0, 24
 	cmp r0, 0
 	bne _0806E014
@@ -3049,7 +3049,7 @@ sub_806DFB8: @ 806DFB8
 _0806E010: .4byte gMapHeader
 _0806E014:
 	adds r0, r5, 0
-	bl sub_8059FB0
+	bl MetatileBehavior_IsDeepOrSemiDeepWater
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -3079,8 +3079,8 @@ _0806E046:
 	bx r1
 	thumb_func_end sub_806DFB8
 
-	thumb_func_start GetFieldObjectScriptPointerForComparison
-GetFieldObjectScriptPointerForComparison: @ 806E050
+	thumb_func_start GetObjectEventScriptPointerForComparison
+GetObjectEventScriptPointerForComparison: @ 806E050
 	push {r4,r5,lr}
 	sub sp, 0x8
 	bl player_get_direction_upper_nybble
@@ -3095,7 +3095,7 @@ GetFieldObjectScriptPointerForComparison: @ 806E050
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r5, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	adds r1, r0, 0
 	lsls r1, 24
 	lsrs r1, 24
@@ -3106,7 +3106,7 @@ GetFieldObjectScriptPointerForComparison: @ 806E050
 	pop {r4,r5}
 	pop {r1}
 	bx r1
-	thumb_func_end GetFieldObjectScriptPointerForComparison
+	thumb_func_end GetObjectEventScriptPointerForComparison
 
 	thumb_func_start SetCableClubWarp
 SetCableClubWarp: @ 806E08C
@@ -3121,7 +3121,7 @@ SetCableClubWarp: @ 806E08C
 	ldrsh r0, [r0, r1]
 	movs r2, 0x2
 	ldrsh r1, [r4, r2]
-	bl sub_8058F78
+	bl MapGridGetMetatileBehaviorAt
 	ldr r4, _0806E0CC @ =gMapHeader
 	adds r0, r4, 0
 	mov r1, sp

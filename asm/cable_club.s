@@ -55,7 +55,7 @@ sub_808078C: @ 808078C
 	lsrs r4, 24
 	adds r0, r4, 0
 	movs r1, 0
-	bl sub_80F7750
+	bl SetStdWindowBorderStyle
 	ldr r5, _080807E0 @ =gStringVar4
 	ldr r1, _080807E4 @ =gUnknown_841DF82
 	adds r0, r5, 0
@@ -91,7 +91,7 @@ sub_80807E8: @ 80807E8
 	lsrs r4, 24
 	adds r0, r4, 0
 	movs r1, 0
-	bl sub_80F6F9C
+	bl ClearStdWindowAndFrame
 	adds r0, r4, 0
 	movs r1, 0x3
 	bl CopyWindowToVram
@@ -142,7 +142,7 @@ sub_8080844: @ 8080844
 	lsrs r0, 24
 	lsls r1, 24
 	lsrs r1, 24
-	bl sub_800A0D0
+	bl GetLinkPlayerDataExchangeStatusTimed
 	lsls r0, 24
 	lsrs r0, 24
 	subs r0, 0x1
@@ -243,7 +243,7 @@ sub_80808F0: @ 80808F0
 	lsrs r1, r0, 24
 	cmp r1, 0
 	bne _08080934
-	ldr r0, _08080928 @ =gUnknown_202271A
+	ldr r0, _08080928 @ =gLinkType
 	strh r1, [r0]
 	ldr r1, _0808092C @ =gTasks
 	lsls r0, r4, 2
@@ -256,7 +256,7 @@ sub_80808F0: @ 80808F0
 	b _08080936
 	.align 2, 0
 _08080924: .4byte gMain
-_08080928: .4byte gUnknown_202271A
+_08080928: .4byte gLinkType
 _0808092C: .4byte gTasks
 _08080930: .4byte sub_8080FB4
 _08080934:
@@ -290,7 +290,7 @@ _08080952:
 	.align 2, 0
 _08080964: .4byte gMain
 _08080968:
-	ldr r1, _08080984 @ =gUnknown_202271A
+	ldr r1, _08080984 @ =gLinkType
 	movs r0, 0
 	strh r0, [r1]
 	ldr r1, _08080988 @ =gTasks
@@ -306,7 +306,7 @@ _0808097E:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08080984: .4byte gUnknown_202271A
+_08080984: .4byte gLinkType
 _08080988: .4byte gTasks
 _0808098C: .4byte sub_8080FB4
 	thumb_func_end sub_808093C
@@ -384,9 +384,9 @@ sub_80809F8: @ 80809F8
 	ldrsh r2, [r4, r3]
 	cmp r2, 0
 	bne _08080A30
-	bl sub_800A0B4
+	bl OpenLinkTimed
 	bl sub_800AA24
-	bl sub_800A270
+	bl ResetLinkPlayers
 	ldr r0, _08080A2C @ =gUnknown_83C6AB0
 	bl AddWindow
 	strh r0, [r4, 0xA]
@@ -439,25 +439,25 @@ sub_8080A4C: @ 8080A4C
 	adds r4, r0, r1
 	movs r0, 0
 	strh r0, [r4, 0xE]
-	bl sub_800AA48
+	bl IsLinkMaster
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
 	bne _08080AB0
 	movs r0, 0x15
 	bl PlaySE
-	ldr r0, _08080AA8 @ =gUnknown_81BC4CE
+	ldr r0, _08080AA8 @ =CableClub_Text_WhenAllPlayersReadyAConfirmBCancel
 	bl ShowFieldAutoScrollMessage
 	ldr r0, _08080AAC @ =sub_8080AD0
 	b _08080ABE
 	.align 2, 0
 _08080AA4: .4byte gTasks
-_08080AA8: .4byte gUnknown_81BC4CE
+_08080AA8: .4byte CableClub_Text_WhenAllPlayersReadyAConfirmBCancel
 _08080AAC: .4byte sub_8080AD0
 _08080AB0:
 	movs r0, 0x16
 	bl PlaySE
-	ldr r0, _08080AC8 @ =gUnknown_81BC54C
+	ldr r0, _08080AC8 @ =CableClub_Text_AwaitingLinkupBCancel
 	bl ShowFieldAutoScrollMessage
 	ldr r0, _08080ACC @ =sub_8080CDC
 _08080ABE:
@@ -467,7 +467,7 @@ _08080AC0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080AC8: .4byte gUnknown_81BC54C
+_08080AC8: .4byte CableClub_Text_AwaitingLinkupBCancel
 _08080ACC: .4byte sub_8080CDC
 	thumb_func_end sub_8080A4C
 
@@ -564,7 +564,7 @@ sub_8080B20: @ 8080B20
 	movs r2, 0
 	movs r3, 0x1
 	bl ConvertIntToDecimalStringN
-	ldr r0, _08080BC0 @ =gUnknown_81BC50D
+	ldr r0, _08080BC0 @ =CableClub_Text_StartLinkWithXPlayersAConfirmBCancel
 	bl ShowFieldAutoScrollMessage
 	mov r0, r9
 	subs r0, 0x8
@@ -582,7 +582,7 @@ _08080BA8:
 _08080BB4: .4byte gTasks+0x8
 _08080BB8: .4byte gMain
 _08080BBC: .4byte gStringVar1
-_08080BC0: .4byte gUnknown_81BC50D
+_08080BC0: .4byte CableClub_Text_StartLinkWithXPlayersAConfirmBCancel
 _08080BC4: .4byte sub_8080BC8
 	thumb_func_end sub_8080B20
 
@@ -608,7 +608,7 @@ sub_8080BC8: @ 8080BC8
 	lsls r0, 24
 	cmp r0, 0
 	bne _08080C5C
-	bl sub_800A944
+	bl GetSavedPlayerCount
 	adds r4, r0, 0
 	bl GetLinkPlayerCount_2
 	lsls r4, 24
@@ -622,7 +622,7 @@ sub_8080BC8: @ 8080BC8
 	cmp r0, 0
 	beq _08080C3C
 _08080C16:
-	ldr r0, _08080C30 @ =gUnknown_81BC4CE
+	ldr r0, _08080C30 @ =CableClub_Text_WhenAllPlayersReadyAConfirmBCancel
 	bl ShowFieldAutoScrollMessage
 	ldr r1, _08080C34 @ =gTasks
 	lsls r0, r5, 2
@@ -634,7 +634,7 @@ _08080C16:
 	b _08080C5C
 	.align 2, 0
 _08080C2C: .4byte gMain
-_08080C30: .4byte gUnknown_81BC4CE
+_08080C30: .4byte CableClub_Text_WhenAllPlayersReadyAConfirmBCancel
 _08080C34: .4byte gTasks
 _08080C38: .4byte sub_8080AD0
 _08080C3C:
@@ -644,7 +644,7 @@ _08080C3C:
 	beq _08080C5C
 	movs r0, 0x5
 	bl PlaySE
-	bl sub_800A5BC
+	bl CheckShouldAdvanceLinkState
 	ldr r0, _08080C64 @ =gTasks
 	lsls r1, r6, 2
 	adds r1, r6
@@ -685,7 +685,7 @@ sub_8080C6C: @ 8080C6C
 	beq _08080CCE
 	bl GetLinkPlayerCount_2
 	adds r4, r0, 0
-	bl sub_800A944
+	bl GetSavedPlayerCount
 	lsls r4, 24
 	lsls r0, 24
 	cmp r4, r0
@@ -696,7 +696,7 @@ sub_8080C6C: @ 8080C6C
 _08080CB0: .4byte gTasks
 _08080CB4: .4byte sub_8080FF0
 _08080CB8:
-	ldr r4, _08080CD4 @ =gUnknown_20370D0
+	ldr r4, _08080CD4 @ =gSpecialVar_Result
 	adds r0, r7, 0
 	adds r1, r6, 0
 	bl sub_8080844
@@ -712,7 +712,7 @@ _08080CCE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080CD4: .4byte gUnknown_20370D0
+_08080CD4: .4byte gSpecialVar_Result
 _08080CD8: .4byte sub_8080DC0
 	thumb_func_end sub_8080C6C
 
@@ -736,7 +736,7 @@ sub_8080CDC: @ 8080CDC
 	bl sub_80808BC
 	cmp r0, 0x1
 	beq _08080D74
-	ldr r4, _08080D34 @ =gUnknown_20370D0
+	ldr r4, _08080D34 @ =gSpecialVar_Result
 	adds r0, r7, 0
 	adds r1, r6, 0
 	bl sub_8080844
@@ -751,13 +751,13 @@ sub_8080CDC: @ 8080CDC
 	lsrs r0, 16
 	cmp r0, 0x1
 	bhi _08080D3C
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	bl HideFieldMessageBox
 	ldr r0, _08080D38 @ =sub_8080F78
 	b _08080D72
 	.align 2, 0
 _08080D30: .4byte gTasks
-_08080D34: .4byte gUnknown_20370D0
+_08080D34: .4byte gSpecialVar_Result
 _08080D38: .4byte sub_8080F78
 _08080D3C:
 	cmp r2, 0x7
@@ -765,7 +765,7 @@ _08080D3C:
 	cmp r2, 0x9
 	bne _08080D54
 _08080D44:
-	bl sub_80098B8
+	bl CloseLink
 	bl HideFieldMessageBox
 	ldr r0, _08080D50 @ =sub_8080F78
 	b _08080D72
@@ -773,15 +773,15 @@ _08080D44:
 _08080D50: .4byte sub_8080F78
 _08080D54:
 	bl GetLinkPlayerCount_2
-	ldr r4, _08080D7C @ =gUnknown_3005030
+	ldr r4, _08080D7C @ =gFieldLinkPlayerCount
 	strb r0, [r4]
 	bl GetMultiplayerId
-	ldr r1, _08080D80 @ =gUnknown_300502C
+	ldr r1, _08080D80 @ =gLocalLinkPlayerId
 	strb r0, [r1]
 	ldrb r0, [r4]
 	bl sub_800A900
-	ldr r0, _08080D84 @ =gUnknown_2022618
-	bl sub_80898E8
+	ldr r0, _08080D84 @ =gBlockSendBuffer
+	bl TrainerCard_GenerateCardForLinkPlayer
 	ldr r0, _08080D88 @ =sub_8080E6C
 _08080D72:
 	str r0, [r5]
@@ -790,9 +790,9 @@ _08080D74:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080D7C: .4byte gUnknown_3005030
-_08080D80: .4byte gUnknown_300502C
-_08080D84: .4byte gUnknown_2022618
+_08080D7C: .4byte gFieldLinkPlayerCount
+_08080D80: .4byte gLocalLinkPlayerId
+_08080D84: .4byte gBlockSendBuffer
 _08080D88: .4byte sub_8080E6C
 	thumb_func_end sub_8080CDC
 
@@ -838,21 +838,21 @@ sub_8080DC0: @ 8080DC0
 	bl sub_80808BC
 	cmp r0, 0x1
 	beq _08080E50
-	ldr r0, _08080DE8 @ =gUnknown_20370D0
+	ldr r0, _08080DE8 @ =gSpecialVar_Result
 	ldrh r0, [r0]
 	cmp r0, 0x4
 	bne _08080DEC
 	bl sub_8080D8C
 	cmp r0, 0x1
 	beq _08080DFE
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	b _08080E02
 	.align 2, 0
-_08080DE8: .4byte gUnknown_20370D0
+_08080DE8: .4byte gSpecialVar_Result
 _08080DEC:
 	cmp r0, 0x3
 	bne _08080DF6
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	b _08080E02
 _08080DF6:
 	cmp r0, 0x7
@@ -860,7 +860,7 @@ _08080DF6:
 	cmp r0, 0x9
 	bne _08080E20
 _08080DFE:
-	bl sub_80098B8
+	bl CloseLink
 _08080E02:
 	bl HideFieldMessageBox
 	ldr r0, _08080E18 @ =gTasks
@@ -876,15 +876,15 @@ _08080E18: .4byte gTasks
 _08080E1C: .4byte sub_8080F78
 _08080E20:
 	bl GetLinkPlayerCount_2
-	ldr r4, _08080E58 @ =gUnknown_3005030
+	ldr r4, _08080E58 @ =gFieldLinkPlayerCount
 	strb r0, [r4]
 	bl GetMultiplayerId
-	ldr r1, _08080E5C @ =gUnknown_300502C
+	ldr r1, _08080E5C @ =gLocalLinkPlayerId
 	strb r0, [r1]
 	ldrb r0, [r4]
 	bl sub_800A900
-	ldr r0, _08080E60 @ =gUnknown_2022618
-	bl sub_80898E8
+	ldr r0, _08080E60 @ =gBlockSendBuffer
+	bl TrainerCard_GenerateCardForLinkPlayer
 	ldr r1, _08080E64 @ =gTasks
 	lsls r0, r5, 2
 	adds r0, r5
@@ -899,9 +899,9 @@ _08080E50:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080E58: .4byte gUnknown_3005030
-_08080E5C: .4byte gUnknown_300502C
-_08080E60: .4byte gUnknown_2022618
+_08080E58: .4byte gFieldLinkPlayerCount
+_08080E5C: .4byte gLocalLinkPlayerId
+_08080E60: .4byte gBlockSendBuffer
 _08080E64: .4byte gTasks
 _08080E68: .4byte sub_8080E6C
 	thumb_func_end sub_8080DC0
@@ -941,9 +941,9 @@ _08080E9A:
 	cmp r0, 0x1
 	bls _08080EDC
 	lsls r1, r5, 8
-	ldr r0, _08080ED4 @ =gUnknown_2022118
+	ldr r0, _08080ED4 @ =gBlockRecvBuffer
 	adds r1, r0
-	ldr r0, _08080ED8 @ =gUnknown_2039624
+	ldr r0, _08080ED8 @ =gTrainerCards
 	lsls r4, r5, 1
 	adds r4, r5
 	lsls r4, 5
@@ -957,13 +957,13 @@ _08080E9A:
 	b _08080EF2
 	.align 2, 0
 _08080ED0: .4byte gLinkPlayers
-_08080ED4: .4byte gUnknown_2022118
-_08080ED8: .4byte gUnknown_2039624
+_08080ED4: .4byte gBlockRecvBuffer
+_08080ED8: .4byte gTrainerCards
 _08080EDC:
 	lsls r1, r5, 8
-	ldr r0, _08080F3C @ =gUnknown_2022118
+	ldr r0, _08080F3C @ =gBlockRecvBuffer
 	adds r1, r0
-	ldr r2, _08080F40 @ =gUnknown_2039624
+	ldr r2, _08080F40 @ =gTrainerCards
 	lsls r0, r5, 1
 	adds r0, r5
 	lsls r0, 5
@@ -984,11 +984,11 @@ _08080EF8:
 	bl SetSuppressLinkErrorMessage
 	bl ResetBlockReceivedFlags
 	bl HideFieldMessageBox
-	ldr r0, _08080F44 @ =gUnknown_20370D0
+	ldr r0, _08080F44 @ =gSpecialVar_Result
 	ldrh r0, [r0]
 	cmp r0, 0x1
 	bne _08080F54
-	ldr r0, _08080F48 @ =gUnknown_202271A
+	ldr r0, _08080F48 @ =gLinkType
 	ldrh r1, [r0]
 	ldr r0, _08080F4C @ =0x00004411
 	ldr r0, _08080F50 @ =gTasks
@@ -1003,14 +1003,14 @@ _08080EF8:
 	bl DestroyTask
 	b _08080F66
 	.align 2, 0
-_08080F3C: .4byte gUnknown_2022118
-_08080F40: .4byte gUnknown_2039624
-_08080F44: .4byte gUnknown_20370D0
-_08080F48: .4byte gUnknown_202271A
+_08080F3C: .4byte gBlockRecvBuffer
+_08080F40: .4byte gTrainerCards
+_08080F44: .4byte gSpecialVar_Result
+_08080F48: .4byte gLinkType
 _08080F4C: .4byte 0x00004411
 _08080F50: .4byte gTasks
 _08080F54:
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	ldr r0, _08080F70 @ =gTasks
 	mov r2, r8
 	adds r1, r2, r7
@@ -1034,7 +1034,7 @@ sub_8080F78: @ 8080F78
 	push {r4,r5,lr}
 	lsls r0, 24
 	lsrs r5, r0, 24
-	ldr r0, _08080FAC @ =gUnknown_3003F64
+	ldr r0, _08080FAC @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 	cmp r0, 0
 	bne _08080FA6
@@ -1055,7 +1055,7 @@ _08080FA6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080FAC: .4byte gUnknown_3003F64
+_08080FAC: .4byte gReceivedRemoteLinkPlayers
 _08080FB0: .4byte gTasks
 	thumb_func_end sub_8080F78
 
@@ -1065,7 +1065,7 @@ sub_8080FB4: @ 8080FB4
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	ldr r1, _08080FE8 @ =gUnknown_20370D0
+	ldr r1, _08080FE8 @ =gSpecialVar_Result
 	movs r0, 0x5
 	strh r0, [r1]
 	ldr r1, _08080FEC @ =gTasks
@@ -1083,7 +1083,7 @@ sub_8080FB4: @ 8080FB4
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080FE8: .4byte gUnknown_20370D0
+_08080FE8: .4byte gSpecialVar_Result
 _08080FEC: .4byte gTasks
 	thumb_func_end sub_8080FB4
 
@@ -1093,7 +1093,7 @@ sub_8080FF0: @ 8080FF0
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	ldr r1, _08081024 @ =gUnknown_20370D0
+	ldr r1, _08081024 @ =gSpecialVar_Result
 	movs r0, 0x6
 	strh r0, [r1]
 	ldr r1, _08081028 @ =gTasks
@@ -1111,7 +1111,7 @@ sub_8080FF0: @ 8080FF0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081024: .4byte gUnknown_20370D0
+_08081024: .4byte gSpecialVar_Result
 _08081028: .4byte gTasks
 	thumb_func_end sub_8080FF0
 
@@ -1148,12 +1148,12 @@ _0808105A:
 _08081060: .4byte sub_8080FF0
 	thumb_func_end sub_808102C
 
-	thumb_func_start sub_8081064
-sub_8081064: @ 8081064
+	thumb_func_start TryBattleLinkup
+TryBattleLinkup: @ 8081064
 	push {r4,lr}
 	movs r3, 0x2
 	movs r2, 0x2
-	ldr r0, _0808107C @ =gUnknown_20370C0
+	ldr r0, _0808107C @ =gSpecialVar_0x8004
 	ldrh r0, [r0]
 	cmp r0, 0x2
 	beq _08081098
@@ -1163,31 +1163,31 @@ sub_8081064: @ 8081064
 	beq _08081086
 	b _080810B4
 	.align 2, 0
-_0808107C: .4byte gUnknown_20370C0
+_0808107C: .4byte gSpecialVar_0x8004
 _08081080:
 	cmp r0, 0x5
 	beq _080810A8
 	b _080810B4
 _08081086:
 	movs r3, 0x2
-	ldr r1, _08081090 @ =gUnknown_202271A
+	ldr r1, _08081090 @ =gLinkType
 	ldr r4, _08081094 @ =0x00002233
 	b _080810B0
 	.align 2, 0
-_08081090: .4byte gUnknown_202271A
+_08081090: .4byte gLinkType
 _08081094: .4byte 0x00002233
 _08081098:
 	movs r3, 0x2
-	ldr r1, _080810A0 @ =gUnknown_202271A
+	ldr r1, _080810A0 @ =gLinkType
 	ldr r4, _080810A4 @ =0x00002244
 	b _080810B0
 	.align 2, 0
-_080810A0: .4byte gUnknown_202271A
+_080810A0: .4byte gLinkType
 _080810A4: .4byte 0x00002244
 _080810A8:
 	movs r3, 0x4
 	movs r2, 0x4
-	ldr r1, _080810C4 @ =gUnknown_202271A
+	ldr r1, _080810C4 @ =gLinkType
 	ldr r4, _080810C8 @ =0x00002255
 _080810B0:
 	adds r0, r4, 0
@@ -1200,14 +1200,14 @@ _080810B4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080810C4: .4byte gUnknown_202271A
+_080810C4: .4byte gLinkType
 _080810C8: .4byte 0x00002255
-	thumb_func_end sub_8081064
+	thumb_func_end TryBattleLinkup
 
-	thumb_func_start sub_80810CC
-sub_80810CC: @ 80810CC
+	thumb_func_start TryTradeLinkup
+TryTradeLinkup: @ 80810CC
 	push {lr}
-	ldr r1, _080810E8 @ =gUnknown_202271A
+	ldr r1, _080810E8 @ =gLinkType
 	ldr r2, _080810EC @ =0x00001133
 	adds r0, r2, 0
 	strh r0, [r1]
@@ -1220,18 +1220,18 @@ sub_80810CC: @ 80810CC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080810E8: .4byte gUnknown_202271A
+_080810E8: .4byte gLinkType
 _080810EC: .4byte 0x00001133
 _080810F0: .4byte gBattleTypeFlags
-	thumb_func_end sub_80810CC
+	thumb_func_end TryTradeLinkup
 
 	thumb_func_start sub_80810F4
 sub_80810F4: @ 80810F4
 	push {lr}
-	ldr r1, _08081118 @ =gUnknown_20370D0
+	ldr r1, _08081118 @ =gSpecialVar_Result
 	movs r0, 0
 	strh r0, [r1]
-	ldr r1, _0808111C @ =gUnknown_202271A
+	ldr r1, _0808111C @ =gLinkType
 	ldr r2, _08081120 @ =0x00003311
 	adds r0, r2, 0
 	strh r0, [r1]
@@ -1244,8 +1244,8 @@ sub_80810F4: @ 80810F4
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081118: .4byte gUnknown_20370D0
-_0808111C: .4byte gUnknown_202271A
+_08081118: .4byte gSpecialVar_Result
+_0808111C: .4byte gLinkType
 _08081120: .4byte 0x00003311
 _08081124: .4byte gBattleTypeFlags
 	thumb_func_end sub_80810F4
@@ -1253,7 +1253,7 @@ _08081124: .4byte gBattleTypeFlags
 	thumb_func_start sub_8081128
 sub_8081128: @ 8081128
 	push {lr}
-	ldr r1, _08081144 @ =gUnknown_202271A
+	ldr r1, _08081144 @ =gLinkType
 	ldr r2, _08081148 @ =0x00006601
 	adds r0, r2, 0
 	strh r0, [r1]
@@ -1266,7 +1266,7 @@ sub_8081128: @ 8081128
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081144: .4byte gUnknown_202271A
+_08081144: .4byte gLinkType
 _08081148: .4byte 0x00006601
 _0808114C: .4byte gBattleTypeFlags
 	thumb_func_end sub_8081128
@@ -1284,7 +1284,7 @@ sub_8081150: @ 8081150
 	.align 2, 0
 _08081164: .4byte sub_80811FC
 _08081168:
-	ldr r0, _0808117C @ =gUnknown_20370C0
+	ldr r0, _0808117C @ =gSpecialVar_0x8004
 	ldrh r0, [r0]
 	subs r0, 0x1
 	cmp r0, 0x4
@@ -1295,7 +1295,7 @@ _08081168:
 	ldr r0, [r0]
 	mov pc, r0
 	.align 2, 0
-_0808117C: .4byte gUnknown_20370C0
+_0808117C: .4byte gSpecialVar_0x8004
 _08081180: .4byte _08081184
 	.align 2, 0
 _08081184:
@@ -1305,35 +1305,35 @@ _08081184:
 	.4byte _080811D8
 	.4byte _080811B8
 _08081198:
-	ldr r1, _080811A0 @ =gUnknown_202271A
+	ldr r1, _080811A0 @ =gLinkType
 	ldr r2, _080811A4 @ =0x00002233
 	b _080811DC
 	.align 2, 0
-_080811A0: .4byte gUnknown_202271A
+_080811A0: .4byte gLinkType
 _080811A4: .4byte 0x00002233
 _080811A8:
-	ldr r1, _080811B0 @ =gUnknown_202271A
+	ldr r1, _080811B0 @ =gLinkType
 	ldr r2, _080811B4 @ =0x00002244
 	b _080811DC
 	.align 2, 0
-_080811B0: .4byte gUnknown_202271A
+_080811B0: .4byte gLinkType
 _080811B4: .4byte 0x00002244
 _080811B8:
-	ldr r1, _080811C0 @ =gUnknown_202271A
+	ldr r1, _080811C0 @ =gLinkType
 	ldr r2, _080811C4 @ =0x00002255
 	b _080811DC
 	.align 2, 0
-_080811C0: .4byte gUnknown_202271A
+_080811C0: .4byte gLinkType
 _080811C4: .4byte 0x00002255
 _080811C8:
-	ldr r1, _080811D0 @ =gUnknown_202271A
+	ldr r1, _080811D0 @ =gLinkType
 	ldr r2, _080811D4 @ =0x00001111
 	b _080811DC
 	.align 2, 0
-_080811D0: .4byte gUnknown_202271A
+_080811D0: .4byte gLinkType
 _080811D4: .4byte 0x00001111
 _080811D8:
-	ldr r1, _080811F0 @ =gUnknown_202271A
+	ldr r1, _080811F0 @ =gLinkType
 	ldr r2, _080811F4 @ =0x00003322
 _080811DC:
 	adds r0, r2, 0
@@ -1348,7 +1348,7 @@ _080811EC:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080811F0: .4byte gUnknown_202271A
+_080811F0: .4byte gLinkType
 _080811F4: .4byte 0x00003322
 _080811F8: .4byte sub_80811FC
 	thumb_func_end sub_8081150
@@ -1367,8 +1367,8 @@ sub_80811FC: @ 80811FC
 	ldrsh r2, [r4, r3]
 	cmp r2, 0
 	bne _08081230
-	bl sub_8009804
-	bl sub_800A270
+	bl OpenLink
+	bl ResetLinkPlayers
 	ldr r0, _0808122C @ =sub_8081A90
 	movs r1, 0x50
 	bl CreateTask
@@ -1405,7 +1405,7 @@ sub_808124C: @ 808124C
 	lsrs r0, 24
 	cmp r0, 0x1
 	bls _08081292
-	bl sub_800AA48
+	bl IsLinkMaster
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x1
@@ -1443,14 +1443,14 @@ sub_80812A0: @ 80812A0
 	push {r4,r5,lr}
 	lsls r0, 24
 	lsrs r5, r0, 24
-	bl sub_800A944
+	bl GetSavedPlayerCount
 	adds r4, r0, 0
 	bl GetLinkPlayerCount_2
 	lsls r4, 24
 	lsls r0, 24
 	cmp r4, r0
 	bne _080812CA
-	bl sub_800A5BC
+	bl CheckShouldAdvanceLinkState
 	ldr r0, _080812D0 @ =gTasks
 	lsls r1, r5, 2
 	adds r1, r5
@@ -1472,7 +1472,7 @@ sub_80812D8: @ 80812D8
 	push {r4,lr}
 	lsls r0, 24
 	lsrs r4, r0, 24
-	ldr r0, _08081308 @ =gUnknown_3003F64
+	ldr r0, _08081308 @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 	cmp r0, 0x1
 	bne _08081300
@@ -1490,13 +1490,13 @@ _08081300:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081308: .4byte gUnknown_3003F64
+_08081308: .4byte gReceivedRemoteLinkPlayers
 	thumb_func_end sub_80812D8
 
 	thumb_func_start sub_808130C
 sub_808130C: @ 808130C
 	push {lr}
-	bl sub_806F67C
+	bl Field_AskSaveTheGame
 	pop {r0}
 	bx r0
 	thumb_func_end sub_808130C
@@ -1536,24 +1536,24 @@ _08081344:
 _0808135C:
 	movs r0, 0x1
 	movs r1, 0
-	bl fade_screen
-	ldr r1, _08081374 @ =gUnknown_202271A
+	bl FadeScreen
+	ldr r1, _08081374 @ =gLinkType
 	ldr r2, _08081378 @ =0x00002211
 	adds r0, r2, 0
 	strh r0, [r1]
-	bl sub_800A068
+	bl ClearLinkCallback_2
 	b _080813AA
 	.align 2, 0
-_08081374: .4byte gUnknown_202271A
+_08081374: .4byte gLinkType
 _08081378: .4byte 0x00002211
 _0808137C:
-	ldr r0, _08081388 @ =gUnknown_2037AB8
+	ldr r0, _08081388 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
 	b _080813A6
 	.align 2, 0
-_08081388: .4byte gUnknown_2037AB8
+_08081388: .4byte gPaletteFade
 _0808138C:
 	ldrh r0, [r4, 0xA]
 	adds r0, 0x1
@@ -1564,10 +1564,10 @@ _0808138C:
 	ble _0808143A
 	b _080813AA
 _0808139C:
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	b _080813AA
 _080813A2:
-	ldr r0, _080813B4 @ =gUnknown_3003F64
+	ldr r0, _080813B4 @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 _080813A6:
 	cmp r0, 0
@@ -1578,7 +1578,7 @@ _080813AA:
 	strh r0, [r4, 0x8]
 	b _0808143A
 	.align 2, 0
-_080813B4: .4byte gUnknown_3003F64
+_080813B4: .4byte gReceivedRemoteLinkPlayers
 _080813B8:
 	ldr r0, _080813CC @ =gLinkPlayers
 	ldr r0, [r0, 0x4]
@@ -1597,7 +1597,7 @@ _080813D4:
 	lsls r0, 1
 	bl PlayMapChosenOrBattleBGM
 _080813DC:
-	ldr r0, _080813F0 @ =gUnknown_20370C0
+	ldr r0, _080813F0 @ =gSpecialVar_0x8004
 	ldrh r0, [r0]
 	cmp r0, 0x2
 	beq _08081404
@@ -1607,7 +1607,7 @@ _080813DC:
 	beq _080813FA
 	b _0808141A
 	.align 2, 0
-_080813F0: .4byte gUnknown_20370C0
+_080813F0: .4byte gSpecialVar_0x8004
 _080813F4:
 	cmp r0, 0x5
 	beq _08081410
@@ -1625,19 +1625,19 @@ _08081404:
 	.align 2, 0
 _0808140C: .4byte gBattleTypeFlags
 _08081410:
-	bl sub_80A03D8
+	bl ReducePlayerPartyToThree
 	ldr r1, _08081440 @ =gBattleTypeFlags
 	movs r0, 0x4B
 _08081418:
 	str r0, [r1]
 _0808141A:
-	bl sub_80563F0
+	bl CleanupOverworldWindowsAndTilemaps
 	ldr r1, _08081444 @ =gTrainerBattleOpponent_A
 	movs r2, 0x80
 	lsls r2, 4
 	adds r0, r2, 0
 	strh r0, [r1]
-	ldr r0, _08081448 @ =sub_800FD9C
+	ldr r0, _08081448 @ =CB2_InitBattle
 	bl SetMainCallback2
 	ldr r1, _0808144C @ =gMain
 	ldr r0, _08081450 @ =sub_8081668
@@ -1651,7 +1651,7 @@ _0808143A:
 	.align 2, 0
 _08081440: .4byte gBattleTypeFlags
 _08081444: .4byte gTrainerBattleOpponent_A
-_08081448: .4byte sub_800FD9C
+_08081448: .4byte CB2_InitBattle
 _0808144C: .4byte gMain
 _08081450: .4byte sub_8081668
 	thumb_func_end sub_8081318
@@ -1693,20 +1693,20 @@ _08081480:
 _080814A0:
 	movs r0, 0x1
 	movs r1, 0
-	bl fade_screen
-	ldr r0, _080814BC @ =gUnknown_202271A
+	bl FadeScreen
+	ldr r0, _080814BC @ =gLinkType
 	ldr r2, _080814C0 @ =0x00002211
 	adds r1, r2, 0
 	strh r1, [r0]
-	bl sub_800A068
+	bl ClearLinkCallback_2
 	movs r0, 0x1
 	strh r0, [r6]
 	b _0808160A
 	.align 2, 0
-_080814BC: .4byte gUnknown_202271A
+_080814BC: .4byte gLinkType
 _080814C0: .4byte 0x00002211
 _080814C4:
-	ldr r0, _080814D8 @ =gUnknown_2037AB8
+	ldr r0, _080814D8 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -1718,9 +1718,9 @@ _080814D2:
 	strh r0, [r6]
 	b _0808160A
 	.align 2, 0
-_080814D8: .4byte gUnknown_2037AB8
+_080814D8: .4byte gPaletteFade
 _080814DC:
-	ldr r1, _080814EC @ =gUnknown_2022720
+	ldr r1, _080814EC @ =gLocalLinkPlayer
 	movs r0, 0
 	movs r2, 0x1C
 	bl SendBlock
@@ -1728,7 +1728,7 @@ _080814DC:
 	strh r0, [r6]
 	b _0808160A
 	.align 2, 0
-_080814EC: .4byte gUnknown_2022720
+_080814EC: .4byte gLocalLinkPlayer
 _080814F0:
 	bl GetBlockReceivedStatus
 	adds r4, r0, 0
@@ -1746,7 +1746,7 @@ _08081504:
 _0808150C: .4byte gLinkPlayers
 _08081510:
 	lsls r1, r4, 8
-	ldr r2, _08081548 @ =gUnknown_2022118
+	ldr r2, _08081548 @ =gBlockRecvBuffer
 	adds r0, r5, 0
 	adds r1, r2
 	ldm r1!, {r2,r3,r7}
@@ -1756,7 +1756,7 @@ _08081510:
 	ldr r1, [r1]
 	str r1, [r0]
 	adds r0, r5, 0
-	bl sub_800B284
+	bl IntlConvertLinkPlayerName
 	lsls r0, r4, 24
 	lsrs r0, 24
 	bl ResetBlockReceivedFlag
@@ -1772,7 +1772,7 @@ _08081536:
 	strh r0, [r6]
 	b _0808160A
 	.align 2, 0
-_08081548: .4byte gUnknown_2022118
+_08081548: .4byte gBlockRecvBuffer
 _0808154C:
 	ldrh r0, [r6, 0x2]
 	adds r0, 0x1
@@ -1785,12 +1785,12 @@ _0808154C:
 	strh r0, [r6]
 	b _0808160A
 _08081560:
-	bl sub_800AB9C
+	bl PrepareSendLinkCmd2FFE_or_RfuCmd6600
 	movs r0, 0x6
 	strh r0, [r6]
 	b _0808160A
 _0808156A:
-	bl sub_800A4BC
+	bl IsLinkTaskFinished
 	lsls r0, 24
 	cmp r0, 0
 	beq _0808160A
@@ -1818,7 +1818,7 @@ _080815A0:
 	ldr r0, _080815B8 @ =gLinkPlayers
 	ldr r1, _080815BC @ =0x00002211
 	str r1, [r0, 0x14]
-	ldr r0, _080815C0 @ =gUnknown_20370C0
+	ldr r0, _080815C0 @ =gSpecialVar_0x8004
 	ldrh r0, [r0]
 	cmp r0, 0x2
 	beq _080815D4
@@ -1830,7 +1830,7 @@ _080815A0:
 	.align 2, 0
 _080815B8: .4byte gLinkPlayers
 _080815BC: .4byte 0x00002211
-_080815C0: .4byte gUnknown_20370C0
+_080815C0: .4byte gSpecialVar_0x8004
 _080815C4:
 	cmp r0, 0x5
 	beq _080815E0
@@ -1848,19 +1848,19 @@ _080815D4:
 	.align 2, 0
 _080815DC: .4byte gBattleTypeFlags
 _080815E0:
-	bl sub_80A03D8
+	bl ReducePlayerPartyToThree
 	ldr r1, _08081610 @ =gBattleTypeFlags
 	movs r0, 0x4B
 _080815E8:
 	str r0, [r1]
 _080815EA:
-	bl sub_80563F0
+	bl CleanupOverworldWindowsAndTilemaps
 	ldr r1, _08081614 @ =gTrainerBattleOpponent_A
 	movs r3, 0x80
 	lsls r3, 4
 	adds r0, r3, 0
 	strh r0, [r1]
-	ldr r0, _08081618 @ =sub_800FD9C
+	ldr r0, _08081618 @ =CB2_InitBattle
 	bl SetMainCallback2
 	ldr r1, _0808161C @ =gMain
 	ldr r0, _08081620 @ =sub_8081668
@@ -1874,7 +1874,7 @@ _0808160A:
 	.align 2, 0
 _08081610: .4byte gBattleTypeFlags
 _08081614: .4byte gTrainerBattleOpponent_A
-_08081618: .4byte sub_800FD9C
+_08081618: .4byte CB2_InitBattle
 _0808161C: .4byte gMain
 _08081620: .4byte sub_8081668
 	thumb_func_end sub_8081454
@@ -1895,24 +1895,24 @@ sub_8081624: @ 8081624
 	.align 2, 0
 _0808163C: .4byte gMain
 _08081640:
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	ldrb r0, [r4]
 	adds r0, 0x1
 	strb r0, [r4]
 	b _0808165C
 _0808164C:
-	bl sub_800A4BC
+	bl IsLinkTaskFinished
 	lsls r0, 24
 	cmp r0, 0
 	beq _0808165C
-	ldr r0, _08081664 @ =c2_exit_to_overworld_2_switch
+	ldr r0, _08081664 @ =CB2_ReturnToField
 	bl SetMainCallback2
 _0808165C:
 	pop {r4}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081664: .4byte c2_exit_to_overworld_2_switch
+_08081664: .4byte CB2_ReturnToField
 	thumb_func_end sub_8081624
 
 	thumb_func_start sub_8081668
@@ -1926,35 +1926,36 @@ sub_8081668: @ 8081668
 	bl sub_8055DB8
 	bl LoadPlayerParty
 	bl SavePlayerBag
-	bl sub_81134B8
-	ldr r0, _080816B8 @ =gUnknown_20370C0
+	bl Special_UpdateTrainerFansAfterLinkBattle
+	ldr r0, _080816B8 @ =gSpecialVar_0x8004
 	ldrh r0, [r0]
 	cmp r0, 0x5
 	beq _0808170A
-	ldr r0, _080816BC @ =gUnknown_300502C
+	ldr r0, _080816BC @ =gLocalLinkPlayerId
 	ldrb r0, [r0]
 	movs r5, 0x1
 	eors r0, r5
-	bl sub_80CD98C
-	ldr r0, _080816C0 @ =gUnknown_3003F3C
+	bl TryRecordLinkBattleOutcome
+	ldr r0, _080816C0 @ =gWirelessCommType
 	ldrb r0, [r0]
 	cmp r0, 0
 	beq _0808170A
-	ldr r0, _080816C4 @ =gUnknown_2023E8A
+	ldr r0, _080816C4 @ =gBattleOutcome
 	ldrb r0, [r0]
-	cmp r0, 0x1
+	cmp r0, 0x1 @ B_OUTCOME_WON
 	beq _080816C8
-	cmp r0, 0x2
+	cmp r0, 0x2 @ B_OUTCOME_LOST
 	beq _080816EC
 	b _0808170A
 	.align 2, 0
 _080816B0: .4byte gBattleTypeFlags
 _080816B4: .4byte 0x0000ffdf
-_080816B8: .4byte gUnknown_20370C0
-_080816BC: .4byte gUnknown_300502C
-_080816C0: .4byte gUnknown_3003F3C
-_080816C4: .4byte gUnknown_2023E8A
+_080816B8: .4byte gSpecialVar_0x8004
+_080816BC: .4byte gLocalLinkPlayerId
+_080816C0: .4byte gWirelessCommType
+_080816C4: .4byte gBattleOutcome
 _080816C8:
+	@ MEvent_RecordIdOfWonderCardSenderByEventType(0, gLinkPlayers[GetMultiplayerId() ^ 1].trainerId);
 	ldr r4, _080816E8 @ =gLinkPlayers
 	bl GetMultiplayerId
 	eors r0, r5
@@ -1967,11 +1968,12 @@ _080816C8:
 	adds r1, r4
 	ldr r1, [r1]
 	movs r0, 0
-	bl sub_8144714
+	bl MEvent_RecordIdOfWonderCardSenderByEventType
 	b _0808170A
 	.align 2, 0
 _080816E8: .4byte gLinkPlayers
 _080816EC:
+	@ MEvent_RecordIdOfWonderCardSenderByEventType(1, gLinkPlayers[GetMultiplayerId() ^ 1].trainerId);
 	ldr r4, _08081718 @ =gLinkPlayers
 	bl GetMultiplayerId
 	eors r0, r5
@@ -1984,7 +1986,7 @@ _080816EC:
 	adds r1, r4
 	ldr r1, [r1]
 	movs r0, 0x1
-	bl sub_8144714
+	bl MEvent_RecordIdOfWonderCardSenderByEventType
 _0808170A:
 	bl InUnionRoom
 	cmp r0, 0x1
@@ -2001,7 +2003,7 @@ _08081724:
 	ldr r0, _0808173C @ =c2_8056854
 _08081728:
 	str r0, [r1, 0x8]
-	ldr r0, _08081740 @ =sub_806FB7C
+	ldr r0, _08081740 @ =CB2_SetUpSaveAfterLinkBattle
 	bl SetMainCallback2
 	pop {r4,r5}
 	pop {r0}
@@ -2009,13 +2011,13 @@ _08081728:
 	.align 2, 0
 _08081738: .4byte gMain
 _0808173C: .4byte c2_8056854
-_08081740: .4byte sub_806FB7C
+_08081740: .4byte CB2_SetUpSaveAfterLinkBattle
 	thumb_func_end sub_8081668
 
-	thumb_func_start sub_8081744
-sub_8081744: @ 8081744
+	thumb_func_start CleanupLinkRoomState
+CleanupLinkRoomState: @ 8081744
 	push {lr}
-	ldr r0, _0808176C @ =gUnknown_20370C0
+	ldr r0, _0808176C @ =gSpecialVar_0x8004
 	ldrh r1, [r0]
 	subs r0, r1, 0x1
 	lsls r0, 16
@@ -2033,8 +2035,8 @@ _08081760:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808176C: .4byte gUnknown_20370C0
-	thumb_func_end sub_8081744
+_0808176C: .4byte gSpecialVar_0x8004
+	thumb_func_end CleanupLinkRoomState
 
 	thumb_func_start sub_8081770
 sub_8081770: @ 8081770
@@ -2072,13 +2074,13 @@ _080817A4:
 	beq _0808180C
 	b _08081820
 _080817AE:
-	ldr r0, _080817BC @ =gUnknown_81BC4AC
+	ldr r0, _080817BC @ =CableClub_Text_PleaseWaitBCancel
 	bl ShowFieldMessage
 	movs r0, 0x1
 	strh r0, [r5, 0x8]
 	b _08081820
 	.align 2, 0
-_080817BC: .4byte gUnknown_81BC4AC
+_080817BC: .4byte CableClub_Text_PleaseWaitBCancel
 _080817C0:
 	bl IsFieldMessageBoxHidden
 	lsls r0, 24
@@ -2087,7 +2089,7 @@ _080817C0:
 	bl sub_8057F34
 	ldr r0, _080817DC @ =gSpecialVar_0x8005
 	ldrb r0, [r0]
-	bl sub_80096F8
+	bl SetLocalLinkPlayerId
 	movs r0, 0x2
 	strh r0, [r5, 0x8]
 	b _08081820
@@ -2179,11 +2181,11 @@ _08081882:
 	bl ScriptContext2_Enable
 	movs r0, 0x1
 	movs r1, 0
-	bl fade_screen
-	bl sub_800A068
+	bl FadeScreen
+	bl ClearLinkCallback_2
 	b _080818B8
 _08081894:
-	ldr r0, _080818A4 @ =gUnknown_2037AB8
+	ldr r0, _080818A4 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -2191,27 +2193,27 @@ _08081894:
 	bne _080818D8
 	b _080818B8
 	.align 2, 0
-_080818A4: .4byte gUnknown_2037AB8
+_080818A4: .4byte gPaletteFade
 _080818A8:
-	ldr r1, _080818C0 @ =gUnknown_2031DA4
+	ldr r1, _080818C0 @ =gSelectedTradeMonPositions
 	movs r0, 0
 	strb r0, [r1]
 	strb r0, [r1, 0x1]
 	bl m4aMPlayAllStop
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 _080818B8:
 	ldrh r0, [r4, 0x8]
 	adds r0, 0x1
 	strh r0, [r4, 0x8]
 	b _080818D8
 	.align 2, 0
-_080818C0: .4byte gUnknown_2031DA4
+_080818C0: .4byte gSelectedTradeMonPositions
 _080818C4:
-	ldr r0, _080818E0 @ =gUnknown_3003F64
+	ldr r0, _080818E0 @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 	cmp r0, 0
 	bne _080818D8
-	ldr r0, _080818E4 @ =sub_804C718
+	ldr r0, _080818E4 @ =CB2_ReturnFromLinkTrade
 	bl SetMainCallback2
 	adds r0, r5, 0
 	bl DestroyTask
@@ -2220,8 +2222,8 @@ _080818D8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080818E0: .4byte gUnknown_3003F64
-_080818E4: .4byte sub_804C718
+_080818E0: .4byte gReceivedRemoteLinkPlayers
+_080818E4: .4byte CB2_ReturnFromLinkTrade
 	thumb_func_end sub_8081850
 
 	thumb_func_start sub_80818E8
@@ -2255,11 +2257,11 @@ _0808191A:
 	bl ScriptContext2_Enable
 	movs r0, 0x1
 	movs r1, 0
-	bl fade_screen
-	bl sub_80F985C
+	bl FadeScreen
+	bl Rfu_set_zero
 	b _08081950
 _0808192C:
-	ldr r0, _0808193C @ =gUnknown_2037AB8
+	ldr r0, _0808193C @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -2267,27 +2269,27 @@ _0808192C:
 	bne _08081970
 	b _08081950
 	.align 2, 0
-_0808193C: .4byte gUnknown_2037AB8
+_0808193C: .4byte gPaletteFade
 _08081940:
-	ldr r1, _08081958 @ =gUnknown_2031DA4
+	ldr r1, _08081958 @ =gSelectedTradeMonPositions
 	movs r0, 0
 	strb r0, [r1]
 	strb r0, [r1, 0x1]
 	bl m4aMPlayAllStop
-	bl sub_800AB9C
+	bl PrepareSendLinkCmd2FFE_or_RfuCmd6600
 _08081950:
 	ldrh r0, [r4]
 	adds r0, 0x1
 	strh r0, [r4]
 	b _08081970
 	.align 2, 0
-_08081958: .4byte gUnknown_2031DA4
+_08081958: .4byte gSelectedTradeMonPositions
 _0808195C:
-	bl sub_800A4BC
+	bl IsLinkTaskFinished
 	lsls r0, 24
 	cmp r0, 0
 	beq _08081970
-	bl sub_8117118
+	bl UnionRoom_CreateTask_CallBC2ReturnFromLinkTrade
 	adds r0, r5, 0
 	bl DestroyTask
 _08081970:
@@ -2296,10 +2298,10 @@ _08081970:
 	bx r0
 	thumb_func_end sub_80818E8
 
-	thumb_func_start sub_8081978
-sub_8081978: @ 8081978
+	thumb_func_start EnterTradeSeat
+EnterTradeSeat: @ 8081978
 	push {lr}
-	ldr r0, _0808198C @ =gUnknown_3003F3C
+	ldr r0, _0808198C @ =gWirelessCommType
 	ldrb r0, [r0]
 	cmp r0, 0
 	beq _08081994
@@ -2307,7 +2309,7 @@ sub_8081978: @ 8081978
 	bl sub_8081828
 	b _0808199A
 	.align 2, 0
-_0808198C: .4byte gUnknown_3003F3C
+_0808198C: .4byte gWirelessCommType
 _08081990: .4byte sub_80818E8
 _08081994:
 	ldr r0, _080819A0 @ =sub_8081850
@@ -2317,7 +2319,7 @@ _0808199A:
 	bx r0
 	.align 2, 0
 _080819A0: .4byte sub_8081850
-	thumb_func_end sub_8081978
+	thumb_func_end EnterTradeSeat
 
 	thumb_func_start sub_80819A4
 sub_80819A4: @ 80819A4
@@ -2340,14 +2342,14 @@ sub_80819B8: @ 80819B8
 	bx r0
 	thumb_func_end sub_80819B8
 
-	thumb_func_start sub_80819C8
-sub_80819C8: @ 80819C8
+	thumb_func_start EnterColosseumPlayerSpot
+EnterColosseumPlayerSpot: @ 80819C8
 	push {lr}
-	ldr r1, _080819E4 @ =gUnknown_202271A
+	ldr r1, _080819E4 @ =gLinkType
 	ldr r2, _080819E8 @ =0x00002211
 	adds r0, r2, 0
 	strh r0, [r1]
-	ldr r0, _080819EC @ =gUnknown_3003F3C
+	ldr r0, _080819EC @ =gWirelessCommType
 	ldrb r0, [r0]
 	cmp r0, 0
 	beq _080819F4
@@ -2355,9 +2357,9 @@ sub_80819C8: @ 80819C8
 	bl sub_8081828
 	b _080819FA
 	.align 2, 0
-_080819E4: .4byte gUnknown_202271A
+_080819E4: .4byte gLinkType
 _080819E8: .4byte 0x00002211
-_080819EC: .4byte gUnknown_3003F3C
+_080819EC: .4byte gWirelessCommType
 _080819F0: .4byte sub_8081454
 _080819F4:
 	ldr r0, _08081A00 @ =sub_8081318
@@ -2367,7 +2369,7 @@ _080819FA:
 	bx r0
 	.align 2, 0
 _08081A00: .4byte sub_8081318
-	thumb_func_end sub_80819C8
+	thumb_func_end EnterColosseumPlayerSpot
 
 	thumb_func_start sub_8081A04
 sub_8081A04: @ 8081A04
@@ -2382,19 +2384,19 @@ sub_8081A04: @ 8081A04
 _08081A18: .4byte sub_808177C
 	thumb_func_end sub_8081A04
 
-	thumb_func_start sp02A_crash_sound
-sp02A_crash_sound: @ 8081A1C
+	thumb_func_start Script_ShowLinkTrainerCard
+Script_ShowLinkTrainerCard: @ 8081A1C
 	push {lr}
-	ldr r0, _08081A2C @ =gUnknown_20370C4
+	ldr r0, _08081A2C @ =gSpecialVar_0x8006
 	ldrb r0, [r0]
-	ldr r1, _08081A30 @ =c2_exit_to_overworld_1_continue_scripts_restart_music
-	bl sub_808B700
+	ldr r1, _08081A30 @ =CB2_ReturnToFieldContinueScriptPlayMapMusic
+	bl ShowTrainerCardInLink
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081A2C: .4byte gUnknown_20370C4
-_08081A30: .4byte c2_exit_to_overworld_1_continue_scripts_restart_music
-	thumb_func_end sp02A_crash_sound
+_08081A2C: .4byte gSpecialVar_0x8006
+_08081A30: .4byte CB2_ReturnToFieldContinueScriptPlayMapMusic
+	thumb_func_end Script_ShowLinkTrainerCard
 
 	thumb_func_start sub_8081A34
 sub_8081A34: @ 8081A34
@@ -2402,17 +2404,17 @@ sub_8081A34: @ 8081A34
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	ldr r0, _08081A74 @ =gUnknown_20370C4
+	ldr r0, _08081A74 @ =gSpecialVar_0x8006
 	strh r4, [r0]
 	ldr r0, _08081A78 @ =gStringVar1
 	lsls r1, r4, 3
 	subs r1, r4
 	lsls r1, 2
-	ldr r2, _08081A7C @ =gUnknown_2022744
+	ldr r2, _08081A7C @ =gLinkPlayers + 8
 	adds r1, r2
 	bl StringCopy
 	adds r0, r4, 0
-	bl sub_808B1BC
+	bl GetTrainerCardStars
 	lsls r0, 24
 	lsrs r1, r0, 24
 	cmp r1, 0
@@ -2427,9 +2429,9 @@ sub_8081A34: @ 8081A34
 	movs r0, 0x1
 	b _08081A8A
 	.align 2, 0
-_08081A74: .4byte gUnknown_20370C4
+_08081A74: .4byte gSpecialVar_0x8006
 _08081A78: .4byte gStringVar1
-_08081A7C: .4byte gUnknown_2022744
+_08081A7C: .4byte gLinkPlayers + 8
 _08081A80: .4byte gStringVar2
 _08081A84: .4byte gUnknown_83C6AB8
 _08081A88:
@@ -2459,13 +2461,13 @@ sub_8081A90: @ 8081A90
 	lsls r0, 17
 	cmp r1, r0
 	ble _08081AC2
-	bl sub_80098B8
-	ldr r0, _08081ADC @ =c2_800ACD4
+	bl CloseLink
+	ldr r0, _08081ADC @ =CB2_LinkError
 	bl SetMainCallback2
 	adds r0, r4, 0
 	bl DestroyTask
 _08081AC2:
-	ldr r0, _08081AE0 @ =gUnknown_3003F64
+	ldr r0, _08081AE0 @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 	cmp r0, 0
 	beq _08081AD0
@@ -2477,8 +2479,8 @@ _08081AD0:
 	bx r0
 	.align 2, 0
 _08081AD8: .4byte gTasks
-_08081ADC: .4byte c2_800ACD4
-_08081AE0: .4byte gUnknown_3003F64
+_08081ADC: .4byte CB2_LinkError
+_08081AE0: .4byte gReceivedRemoteLinkPlayers
 	thumb_func_end sub_8081A90
 
 	thumb_func_start sub_8081AE4
@@ -2486,7 +2488,7 @@ sub_8081AE4: @ 8081AE4
 	push {r4,lr}
 	lsls r0, 24
 	lsrs r4, r0, 24
-	ldr r0, _08081B04 @ =gUnknown_3003F64
+	ldr r0, _08081B04 @ =gReceivedRemoteLinkPlayers
 	ldrb r0, [r0]
 	cmp r0, 0
 	bne _08081AFC
@@ -2498,7 +2500,7 @@ _08081AFC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08081B04: .4byte gUnknown_3003F64
+_08081B04: .4byte gReceivedRemoteLinkPlayers
 	thumb_func_end sub_8081AE4
 
 	thumb_func_start sub_8081B08
@@ -2507,7 +2509,7 @@ sub_8081B08: @ 8081B08
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
-	bl sub_800AAC0
+	bl Link_TryStartSend5FFF
 	ldr r1, _08081B28 @ =gTasks
 	lsls r0, r4, 2
 	adds r0, r4

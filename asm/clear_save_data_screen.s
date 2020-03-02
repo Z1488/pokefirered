@@ -26,8 +26,8 @@ sub_80F558C: @ 80F558C
 	bx r0
 	thumb_func_end sub_80F558C
 
-	thumb_func_start sub_80F55A0
-sub_80F55A0: @ 80F55A0
+	thumb_func_start CB2_SaveClearScreen_Init
+CB2_SaveClearScreen_Init: @ 80F55A0
 	push {r4,lr}
 	ldr r4, _080F55D0 @ =gUnknown_203AB54
 	movs r0, 0x4
@@ -52,7 +52,7 @@ sub_80F55A0: @ 80F55A0
 _080F55D0: .4byte gUnknown_203AB54
 _080F55D4: .4byte sub_80F55DC
 _080F55D8: .4byte sub_80F5574
-	thumb_func_end sub_80F55A0
+	thumb_func_end CB2_SaveClearScreen_Init
 
 	thumb_func_start sub_80F55DC
 sub_80F55DC: @ 80F55DC
@@ -91,7 +91,7 @@ _080F5618:
 	bl BeginNormalPaletteFade
 	b _080F56E2
 _080F562A:
-	ldr r0, _080F5640 @ =gUnknown_2037AB8
+	ldr r0, _080F5640 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -101,7 +101,7 @@ _080F562A:
 	bl SetVBlankCallback
 	b _080F56E2
 	.align 2, 0
-_080F5640: .4byte gUnknown_2037AB8
+_080F5640: .4byte gPaletteFade
 _080F5644:
 	bl sub_80F5820
 	b _080F56E2
@@ -109,18 +109,18 @@ _080F564A:
 	movs r0, 0
 	movs r1, 0x1
 	movs r2, 0xF0
-	bl sub_814FF2C
+	bl TextWindow_SetStdFrame0_WithPal
 	movs r0, 0x1
 	movs r1, 0x1
 	movs r2, 0xF0
-	bl sub_814FF2C
+	bl TextWindow_SetStdFrame0_WithPal
 	b _080F56E2
 _080F5660:
 	movs r0, 0x1
 	movs r1, 0x1
 	movs r2, 0x1
 	movs r3, 0xF
-	bl SetWindowBorderStyle
+	bl DrawStdFrameWithCustomTileAndPalette
 	movs r0, 0x1
 	str r0, [sp]
 	str r0, [sp, 0x4]
@@ -134,7 +134,7 @@ _080F5660:
 	movs r1, 0x2
 	movs r2, 0
 	movs r3, 0x3
-	bl AddTextPrinterParametrized2
+	bl AddTextPrinterParameterized4
 	movs r0, 0x1
 	movs r1, 0x2
 	bl CopyWindowToVram
@@ -152,7 +152,7 @@ _080F569C:
 	movs r1, 0x2
 	movs r2, 0
 	movs r3, 0x2
-	bl sub_810FF60
+	bl CreateYesNoMenu
 	movs r0, 0
 	bl CopyBgTilemapBufferToVram
 	b _080F56E2
@@ -204,7 +204,7 @@ sub_80F5708: @ 80F5708
 	ldrb r0, [r0]
 	cmp r0, 0
 	bne _080F578C
-	bl ProcessMenuInputNoWrap_
+	bl Menu_ProcessInputNoWrapClearOnChoose
 	lsls r0, 24
 	asrs r4, r0, 24
 	movs r0, 0x1
@@ -241,7 +241,7 @@ _080F5744:
 	movs r1, 0x2
 	movs r2, 0
 	movs r3, 0x3
-	bl AddTextPrinterParametrized2
+	bl AddTextPrinterParameterized4
 	movs r0, 0x1
 	movs r1, 0x3
 	bl CopyWindowToVram
@@ -296,7 +296,7 @@ _080F57B8:
 	.align 2, 0
 _080F57D0: .4byte 0x0000ffff
 _080F57D4:
-	ldr r0, _080F5808 @ =gUnknown_2037AB8
+	ldr r0, _080F5808 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -304,7 +304,7 @@ _080F57D4:
 	lsrs r4, r0, 24
 	cmp r4, 0
 	bne _080F57FE
-	bl sub_81100E8
+	bl DestroyYesNoMenu
 	adds r0, r6, 0
 	bl DestroyTask
 	bl FreeAllWindowBuffers
@@ -318,7 +318,7 @@ _080F57FE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080F5808: .4byte gUnknown_2037AB8
+_080F5808: .4byte gPaletteFade
 	thumb_func_end sub_80F579C
 
 	thumb_func_start sub_80F580C
@@ -465,10 +465,5 @@ _080F5940: .4byte 0x81000800
 _080F5944: .4byte gUnknown_841EE64
 _080F5948: .4byte gUnknown_841EE68
 	thumb_func_end sub_80F5820
-
-	thumb_func_start nullsub_85
-nullsub_85: @ 80F594C
-	bx lr
-	thumb_func_end nullsub_85
 
 	.align 2, 0 @ Don't pad with nop.

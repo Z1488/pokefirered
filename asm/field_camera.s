@@ -490,8 +490,8 @@ _0805A914: .4byte gUnknown_3000E90
 _0805A918: .4byte gMapHeader
 	thumb_func_end CurrentMapDrawMetatileAt
 
-	thumb_func_start sub_805A91C
-sub_805A91C: @ 805A91C
+	thumb_func_start DrawDoorMetatileAt
+DrawDoorMetatileAt: @ 805A91C
 	push {r4,r5,lr}
 	adds r3, r0, 0
 	adds r4, r1, 0
@@ -513,7 +513,7 @@ _0805A93E:
 	bx r0
 	.align 2, 0
 _0805A944: .4byte gUnknown_3000E90
-	thumb_func_end sub_805A91C
+	thumb_func_end DrawDoorMetatileAt
 
 	thumb_func_start sub_805A948
 sub_805A948: @ 805A948
@@ -528,7 +528,7 @@ sub_805A948: @ 805A948
 	mov r8, r1
 	adds r0, r6, 0
 	adds r1, r7, 0
-	bl sub_8058E48
+	bl MapGridGetMetatileIdAt
 	lsls r0, 16
 	lsrs r4, r0, 16
 	movs r0, 0x80
@@ -557,7 +557,7 @@ _0805A98C:
 	asrs r0, 16
 	lsls r1, r7, 16
 	asrs r1, 16
-	bl sub_8058F8C
+	bl MapGridGetMetatileLayerTypeAt
 	lsls r0, 24
 	lsrs r0, 24
 	lsls r1, r4, 4
@@ -710,11 +710,11 @@ _0805AAA2:
 	strh r0, [r3]
 _0805AABE:
 	movs r0, 0x1
-	bl schedule_bg_copy_tilemap_to_vram
+	bl ScheduleBgCopyTilemapToVram
 	movs r0, 0x2
-	bl schedule_bg_copy_tilemap_to_vram
+	bl ScheduleBgCopyTilemapToVram
 	movs r0, 0x3
-	bl schedule_bg_copy_tilemap_to_vram
+	bl ScheduleBgCopyTilemapToVram
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -939,7 +939,7 @@ _0805AC54:
 	bl CameraMove
 	adds r0, r4, 0
 	adds r1, r5, 0
-	bl UpdateFieldObjectsForCameraUpdate
+	bl UpdateObjectEventsForCameraUpdate
 	ldr r6, _0805ACA8 @ =gUnknown_3000E90
 	lsls r4, 1
 	lsls r5, 1
@@ -987,7 +987,7 @@ sub_805ACB4: @ 805ACB4
 	asrs r0, 16
 	lsls r1, r5, 16
 	asrs r1, 16
-	bl UpdateFieldObjectsForCameraUpdate
+	bl UpdateObjectEventsForCameraUpdate
 	bl DrawWholeMapView
 	ldr r1, _0805ACE8 @ =gUnknown_300506C
 	lsls r4, 4
@@ -1222,7 +1222,7 @@ CameraPanningCB_PanAhead: @ 805AE74
 	.align 2, 0
 _0805AE84: .4byte gUnknown_2036E2C
 _0805AE88:
-	ldr r0, _0805AEA0 @ =gUnknown_2037078
+	ldr r0, _0805AEA0 @ =gPlayerAvatar
 	ldrb r0, [r0, 0x3]
 	cmp r0, 0x1
 	bne _0805AEA8
@@ -1235,7 +1235,7 @@ _0805AE88:
 	beq _0805AF10
 	b _0805AEAE
 	.align 2, 0
-_0805AEA0: .4byte gUnknown_2037078
+_0805AEA0: .4byte gPlayerAvatar
 _0805AEA4: .4byte gUnknown_3000E9C
 _0805AEA8:
 	ldr r1, _0805AED0 @ =gUnknown_3000E9C

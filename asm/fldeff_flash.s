@@ -5,8 +5,8 @@
 
 	.text
 
-	thumb_func_start sub_80C9B2C
-sub_80C9B2C: @ 80C9B2C
+	thumb_func_start SetUpFieldMove_Flash
+SetUpFieldMove_Flash: @ 80C9B2C
 	push {lr}
 	ldr r0, _080C9B54 @ =gMapHeader
 	ldrb r0, [r0, 0x15]
@@ -17,10 +17,10 @@ sub_80C9B2C: @ 80C9B2C
 	lsls r0, 24
 	cmp r0, 0
 	bne _080C9B6C
-	ldr r1, _080C9B5C @ =gUnknown_3005024
-	ldr r0, _080C9B60 @ =hm_add_c3_launch_phase_2
+	ldr r1, _080C9B5C @ =gFieldCallback2
+	ldr r0, _080C9B60 @ =FieldCallback_PrepareFadeInFromMenu
 	str r0, [r1]
-	ldr r1, _080C9B64 @ =gUnknown_203B0C4
+	ldr r1, _080C9B64 @ =gPostMenuFieldCallback
 	ldr r0, _080C9B68 @ =sub_80C9B74
 	str r0, [r1]
 	movs r0, 0x1
@@ -28,26 +28,26 @@ sub_80C9B2C: @ 80C9B2C
 	.align 2, 0
 _080C9B54: .4byte gMapHeader
 _080C9B58: .4byte 0x00000806
-_080C9B5C: .4byte gUnknown_3005024
-_080C9B60: .4byte hm_add_c3_launch_phase_2
-_080C9B64: .4byte gUnknown_203B0C4
+_080C9B5C: .4byte gFieldCallback2
+_080C9B60: .4byte FieldCallback_PrepareFadeInFromMenu
+_080C9B64: .4byte gPostMenuFieldCallback
 _080C9B68: .4byte sub_80C9B74
 _080C9B6C:
 	movs r0, 0
 _080C9B6E:
 	pop {r1}
 	bx r1
-	thumb_func_end sub_80C9B2C
+	thumb_func_end SetUpFieldMove_Flash
 
 	thumb_func_start sub_80C9B74
 sub_80C9B74: @ 80C9B74
 	push {r4,lr}
-	bl oei_task_add
+	bl CreateFieldEffectShowMon
 	adds r4, r0, 0
 	lsls r4, 24
 	lsrs r4, 24
 	bl GetCursorSelectionMonId
-	ldr r1, _080C9BA4 @ =gUnknown_20386E0
+	ldr r1, _080C9BA4 @ =gFieldEffectArguments
 	lsls r0, 24
 	lsrs r0, 24
 	str r0, [r1]
@@ -64,7 +64,7 @@ sub_80C9B74: @ 80C9B74
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C9BA4: .4byte gUnknown_20386E0
+_080C9BA4: .4byte gFieldEffectArguments
 _080C9BA8: .4byte gTasks
 _080C9BAC: .4byte sub_80C9BB0
 	thumb_func_end sub_80C9B74
@@ -76,13 +76,13 @@ sub_80C9BB0: @ 80C9BB0
 	bl PlaySE
 	ldr r0, _080C9BC8 @ =0x00000806
 	bl FlagSet
-	ldr r0, _080C9BCC @ =gUnknown_81BFB5F
+	ldr r0, _080C9BCC @ =EventScript_FldEffFlash
 	bl ScriptContext1_SetupScript
 	pop {r0}
 	bx r0
 	.align 2, 0
 _080C9BC8: .4byte 0x00000806
-_080C9BCC: .4byte gUnknown_81BFB5F
+_080C9BCC: .4byte EventScript_FldEffFlash
 	thumb_func_end sub_80C9BB0
 
 	thumb_func_start sub_80C9BD0
@@ -209,7 +209,7 @@ sub_80C9CE8: @ 80C9CE8
 	bl get_map_light_from_warp0
 	lsls r0, 24
 	lsrs r7, r0, 24
-	bl sav1_map_get_light_level
+	bl GetCurrentMapType
 	lsls r0, 24
 	lsrs r6, r0, 24
 	movs r4, 0
@@ -421,7 +421,7 @@ sub_80C9E4C: @ 80C9E4C
 	movs r1, 0xE0
 	movs r2, 0x20
 	bl LoadPalette
-	ldr r0, _080C9EDC @ =gUnknown_83F5854
+	ldr r0, _080C9EDC @ =gUnknown_83F5844 + 0x10
 	movs r1, 0xE0
 	movs r2, 0x10
 	bl LoadPalette
@@ -434,7 +434,7 @@ sub_80C9E4C: @ 80C9E4C
 	movs r0, 0x54
 	movs r1, 0
 	bl SetGpuReg
-	ldr r1, _080C9EE4 @ =0x00001f0c
+	ldr r1, _080C9EE4 @ =0x00001f0c =BGCNT_PRIORITY(0) | BGCNT_CHARBASE(3) | BGCNT_SCREENBASE(31)
 	movs r0, 0x8
 	bl SetGpuReg
 	movs r1, 0x8A
@@ -461,7 +461,7 @@ _080C9ECC: .4byte 0x0600c000
 _080C9ED0: .4byte gUnknown_83F5864
 _080C9ED4: .4byte 0x0600f800
 _080C9ED8: .4byte gUnknown_83F5804
-_080C9EDC: .4byte gUnknown_83F5854
+_080C9EDC: .4byte gUnknown_83F5844 + 0x10
 _080C9EE0: .4byte 0x00003e41
 _080C9EE4: .4byte 0x00001f0c
 _080C9EE8: .4byte gTasks
@@ -527,7 +527,7 @@ sub_80C9F38: @ 80C9F38
 	adds r0, r1, 0x1
 	strh r0, [r4, 0xC]
 	lsls r1, 1
-	ldr r0, _080C9F7C @ =gUnknown_83F5854
+	ldr r0, _080C9F7C @ =gUnknown_83F5844 + 0x10
 	adds r0, r1, r0
 	movs r2, 0x10
 	subs r2, r1
@@ -539,7 +539,7 @@ sub_80C9F38: @ 80C9F38
 	.align 2, 0
 _080C9F74: .4byte 0x00001010
 _080C9F78: .4byte gTasks
-_080C9F7C: .4byte gUnknown_83F5854
+_080C9F7C: .4byte gUnknown_83F5844 + 0x10
 _080C9F80:
 	ldr r0, _080C9F98 @ =gUnknown_83F5804
 	movs r1, 0

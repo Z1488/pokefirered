@@ -2,9 +2,9 @@
 #include "gba/m4a_internal.h"
 #include "sound.h"
 #include "battle.h"
+#include "quest_log.h"
 #include "m4a.h"
 #include "main.h"
-#include "pokemon.h"
 #include "constants/songs.h"
 #include "task.h"
 
@@ -15,8 +15,7 @@ struct Fanfare
 };
 
 // TODO: what are these
-extern u8 gUnknown_2031DD8;
-extern u8 gUnknown_203ADFA;
+extern u8 gDisableMapMusicChangeOnMapLoad;
 extern u8 gUnknown_203F174;
 
 // ewram
@@ -24,11 +23,11 @@ EWRAM_DATA struct MusicPlayerInfo* gMPlay_PokemonCry = NULL;
 EWRAM_DATA u8 gPokemonCryBGMDuckingCounter = 0;
 
 // iwram bss
-IWRAM_DATA static u16 sCurrentMapMusic;
-IWRAM_DATA static u16 sNextMapMusic;
-IWRAM_DATA static u8 sMapMusicState;
-IWRAM_DATA static u8 sMapMusicFadeInSpeed;
-IWRAM_DATA static u16 sFanfareCounter;
+/*IWRAM_DATA*/ static u16 sCurrentMapMusic;
+/*IWRAM_DATA*/ static u16 sNextMapMusic;
+/*IWRAM_DATA*/ static u8 sMapMusicState;
+/*IWRAM_DATA*/ static u8 sMapMusicFadeInSpeed;
+/*IWRAM_DATA*/ static u16 sFanfareCounter;
 
 // iwram common
 bool8 gDisableMusic;
@@ -40,7 +39,23 @@ extern struct MusicPlayerInfo gMPlayInfo_SE2;
 extern struct MusicPlayerInfo gMPlayInfo_SE3;
 extern struct ToneData gCryTable[];
 extern struct ToneData gCryTable2[];
-extern const struct Fanfare sFanfares[];
+
+static const struct Fanfare sFanfares[] = {
+    { MUS_FANFA1,      80 },
+    { MUS_FANFA4,     160 },
+    { MUS_FANFA5,     220 },
+    { MUS_ME_WAZA,    220 },
+    { MUS_ME_ASA,     160 },
+    { MUS_ME_BACHI,   340 },
+    { MUS_ME_WASURE,  180 },
+    { MUS_ME_KINOMI,  120 },
+    { MUS_ME_B_BIG,   250 },
+    { MUS_ME_B_SMALL, 150 },
+    { MUS_ME_ZANNEN,  160 },
+    { MUS_POKEFUE,    450 },
+    { MUS_FAN5,       170 },
+    { MUS_FAN2,       196 }
+};
 
 extern u16 SpeciesToCryId(u16);
 
@@ -153,7 +168,7 @@ void FadeOutAndFadeInNewMapMusic(u16 songNum, u8 fadeOutSpeed, u8 fadeInSpeed)
     sMapMusicFadeInSpeed = fadeInSpeed;
 }
 
-void FadeInNewMapMusic(u16 songNum, u8 speed)
+static void FadeInNewMapMusic(u16 songNum, u8 speed)
 {
     FadeInNewBGM(songNum, speed);
     sCurrentMapMusic = songNum;
@@ -177,7 +192,7 @@ void PlayFanfareByFanfareNum(u8 fanfareNum)
 {
     u16 songNum;
 
-    if(gUnknown_203ADFA == 2)
+    if(gQuestLogState == 2)
     {
         sFanfareCounter = 0xFF;
     }
@@ -346,7 +361,7 @@ void PlayCry4(u16 species, s8 pan, u8 mode)
 
 void PlayCry7(u16 species, u8 mode) // exclusive to FR/LG
 {
-    if((u8)(gUnknown_203ADFA - 2) >= 2)
+    if (gQuestLogState != 2 && gQuestLogState != 3)
     {
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, 0xFFFF, 85);
         PlayCryInternal(species, 0, CRY_VOLUME, 10, mode);
@@ -555,7 +570,7 @@ void PlayBGM(u16 songNum)
 
 void PlaySE(u16 songNum)
 {
-    if(gUnknown_2031DD8 == 0 && gUnknown_203ADFA != 2)
+    if(gDisableMapMusicChangeOnMapLoad == 0 && gQuestLogState != 2)
         m4aSongNumStart(songNum);
 }
 

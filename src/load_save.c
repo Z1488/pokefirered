@@ -6,13 +6,10 @@
 #include "random.h"
 #include "malloc.h"
 #include "item.h"
-
-extern void sub_8099E44(void);
-extern void sub_8110840(void *oldSave);
-extern void sub_8055778(int);
-extern void sub_8054F38(u32 newKey);
-extern void ApplyNewEncryptionKeyToBagItems_(u32 newKey);
-extern void sub_815EE6C(u32 newKey);
+#include "save_location.h"
+#include "berry_powder.h"
+#include "overworld.h"
+#include "quest_log.h"
 
 #define SAVEBLOCK_MOVE_RANGE    128
 
@@ -40,10 +37,10 @@ EWRAM_DATA struct LoadedSaveData gLoadedSaveData = {0};
 EWRAM_DATA u32 gLastEncryptionKey = 0;
 
 // IWRAM common
-IWRAM_DATA bool32 gFlashMemoryPresent;
-IWRAM_DATA struct SaveBlock1 *gSaveBlock1Ptr;
-IWRAM_DATA struct SaveBlock2 *gSaveBlock2Ptr;
-IWRAM_DATA struct PokemonStorage *gPokemonStoragePtr;
+bool32 gFlashMemoryPresent;
+struct SaveBlock1 *gSaveBlock1Ptr;
+struct SaveBlock2 *gSaveBlock2Ptr;
+struct PokemonStorage *gPokemonStoragePtr;
 
 void CheckForFlashMemory(void)
 {
@@ -80,7 +77,7 @@ void SetSaveBlocksPointers(void)
     *sav1_LocalVar = (void*)(&gSaveBlock1) + offset;
     gPokemonStoragePtr = (void*)(&gPokemonStorage) + offset;
 
-    sub_8099E44();
+    SetBagPocketsPointers();
     sub_8110840(oldSave);
 }
 
@@ -132,28 +129,28 @@ void MoveSaveBlocks_ResetHeap(void)
 
 u32 sav2_x1_query_bit1(void)
 {
-    return gSaveBlock2Ptr->specialSaveWarp & 1;
+    return gSaveBlock2Ptr->specialSaveWarpFlags & CONTINUE_GAME_WARP;
 }
 
 void sav2_x9_clear_bit1(void)
 {
-    gSaveBlock2Ptr->specialSaveWarp &= ~1;
+    gSaveBlock2Ptr->specialSaveWarpFlags &= ~CONTINUE_GAME_WARP;
 }
 
 void sub_804C1AC(void)
 {
-    gSaveBlock2Ptr->specialSaveWarp |= 1;
+    gSaveBlock2Ptr->specialSaveWarpFlags |= CONTINUE_GAME_WARP;
 }
 
-void sub_804C1C0(void)
+void SetContinueGameWarpStatusToDynamicWarp(void)
 {
     sub_8055778(0);
-    gSaveBlock2Ptr->specialSaveWarp |= 1;
+    gSaveBlock2Ptr->specialSaveWarpFlags |= CONTINUE_GAME_WARP;
 }
 
-void sav2_gender2_inplace_and_xFE(void)
+void ClearContinueGameWarpStatus2(void)
 {
-    gSaveBlock2Ptr->specialSaveWarp &= ~1;
+    gSaveBlock2Ptr->specialSaveWarpFlags &= ~CONTINUE_GAME_WARP;
 }
 
 void SavePlayerParty(void)
@@ -176,32 +173,32 @@ void LoadPlayerParty(void)
         gPlayerParty[i] = gSaveBlock1Ptr->playerParty[i];
 }
 
-void SaveMapObjects(void)
+void SaveObjectEvents(void)
 {
     int i;
 
-    for (i = 0; i < NUM_FIELD_OBJECTS; i++)
-        gSaveBlock1Ptr->mapObjects[i] = gMapObjects[i];
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+        gSaveBlock1Ptr->objectEvents[i] = gObjectEvents[i];
 }
 
-void LoadMapObjects(void)
+void LoadObjectEvents(void)
 {
     int i;
 
-    for (i = 0; i < NUM_FIELD_OBJECTS; i++)
-        gMapObjects[i] = gSaveBlock1Ptr->mapObjects[i];
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+        gObjectEvents[i] = gSaveBlock1Ptr->objectEvents[i];
 }
 
 void SaveSerializedGame(void)
 {
     SavePlayerParty();
-    SaveMapObjects();
+    SaveObjectEvents();
 }
 
 void LoadSerializedGame(void)
 {
     LoadPlayerParty();
-    LoadMapObjects();
+    LoadObjectEvents();
 }
 
 void LoadPlayerBag(void)
@@ -286,12 +283,12 @@ void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey)
 {
     int i;
 
-    for(i = 0; i < 4; i++)
-        ApplyNewEncryptionKeyToWord(&gSaveBlock1Ptr->unkArray[i][1], encryptionKey);
+    for(i = 0; i < NUM_TOWER_CHALLENGE_TYPES; i++)
+        ApplyNewEncryptionKeyToWord(&gSaveBlock1Ptr->trainerTower[i].bestTime, encryptionKey);
 
     sub_8054F38(encryptionKey);
     ApplyNewEncryptionKeyToBagItems_(encryptionKey);
-    sub_815EE6C(encryptionKey);
+    ApplyNewEncryptionKeyToBerryPowder(encryptionKey);
     ApplyNewEncryptionKeyToWord(&gSaveBlock1Ptr->money, encryptionKey);
     ApplyNewEncryptionKeyToHword(&gSaveBlock1Ptr->coins, encryptionKey);
 }

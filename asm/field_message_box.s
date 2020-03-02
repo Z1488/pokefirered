@@ -53,7 +53,7 @@ _08069398:
 	beq _080693EA
 	b _08069402
 _0806939E:
-	ldr r0, _080693BC @ =gUnknown_203ADFA
+	ldr r0, _080693BC @ =gQuestLogState
 	ldrb r0, [r0]
 	cmp r0, 0x2
 	bne _080693C4
@@ -65,17 +65,17 @@ _0806939E:
 	movs r1, 0x80
 	lsls r1, 2
 	movs r0, 0
-	bl sub_814FF98
+	bl TextWindow_LoadTilesStdFrame1
 	b _080693E2
 	.align 2, 0
-_080693BC: .4byte gUnknown_203ADFA
+_080693BC: .4byte gQuestLogState
 _080693C0: .4byte gTextFlags
 _080693C4:
-	bl sub_8069A38
+	bl IsMsgSignPost
 	lsls r0, 24
 	cmp r0, 0
 	bne _080693D4
-	bl sub_80F6E9C
+	bl LoadStdWindowFrameGfx
 	b _080693E2
 _080693D4:
 	bl sub_80F79A4
@@ -83,14 +83,14 @@ _080693D4:
 _080693DA:
 	movs r0, 0
 	movs r1, 0x1
-	bl sub_80F6EE4
+	bl DrawDialogueFrame
 _080693E2:
 	ldrh r0, [r5, 0x8]
 	adds r0, 0x1
 	strh r0, [r5, 0x8]
 	b _08069402
 _080693EA:
-	bl sub_80F6CBC
+	bl RunTextPrinters_CheckPrinter0Active
 	lsls r0, 16
 	lsrs r0, 16
 	cmp r0, 0x1
@@ -226,7 +226,7 @@ textbox_fdecode_auto_and_task_add: @ 80694C8
 	ldr r0, _080694E0 @ =gStringVar4
 	bl StringExpandPlaceholders
 	movs r0, 0x1
-	bl sub_80F6D5C
+	bl AddTextPrinterDiffStyle
 	bl task_add_textbox
 	pop {r0}
 	bx r0
@@ -238,7 +238,7 @@ _080694E0: .4byte gStringVar4
 textbox_auto_and_task_add: @ 80694E4
 	push {lr}
 	movs r0, 0x1
-	bl sub_80F6D5C
+	bl AddTextPrinterDiffStyle
 	bl task_add_textbox
 	pop {r0}
 	bx r0
@@ -250,7 +250,7 @@ HideFieldMessageBox: @ 80694F4
 	bl task_del_textbox
 	movs r0, 0
 	movs r1, 0x1
-	bl sub_80F6F54
+	bl ClearDialogWindowAndFrame
 	ldr r1, _0806950C @ =gUnknown_203709C
 	movs r0, 0
 	strb r0, [r1]
@@ -293,7 +293,7 @@ sub_8069538: @ 8069538
 	bl task_del_textbox
 	movs r0, 0
 	movs r1, 0x1
-	bl sub_80F6F1C
+	bl DrawStdWindowFrame
 	ldr r1, _08069550 @ =gUnknown_203709C
 	movs r0, 0
 	strb r0, [r1]

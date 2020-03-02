@@ -50,7 +50,7 @@ _0811C58C:
 	adds r0, 0x77
 	movs r1, 0xD
 	muls r1, r6
-	ldr r2, _0811C5A8 @ =gUnknown_8247094
+	ldr r2, _0811C5A8 @ =gMoveNames
 	adds r1, r2
 	bl StringCopy
 	adds r0, r4, 0
@@ -60,7 +60,7 @@ _0811C5A2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0811C5A8: .4byte gUnknown_8247094
+_0811C5A8: .4byte gMoveNames
 	thumb_func_end sub_811C568
 
 	thumb_func_start sub_811C5AC
@@ -194,7 +194,7 @@ _0811C628:
 	adds r2, 0x84
 	movs r1, 0xD
 	muls r1, r0
-	ldr r0, _0811C6E4 @ =gUnknown_8247094
+	ldr r0, _0811C6E4 @ =gMoveNames
 	adds r1, r0
 	adds r0, r2, 0
 	bl StringCopy
@@ -209,7 +209,7 @@ _0811C6D2:
 	bx r1
 	.align 2, 0
 _0811C6E0: .4byte gPlayerParty
-_0811C6E4: .4byte gUnknown_8247094
+_0811C6E4: .4byte gMoveNames
 	thumb_func_end sub_811C5D4
 
 	thumb_func_start sub_811C6E8
@@ -558,7 +558,7 @@ _0811C9AA:
 	adds r0, r4, 0
 	adds r0, 0x96
 	ldrh r0, [r0]
-	bl sub_80A1150
+	bl CheckIfItemIsTMHMOrEvolutionStone
 	lsls r0, 24
 	lsrs r0, 24
 	cmp r0, 0x2
@@ -580,7 +580,7 @@ _0811C9E0:
 	strh r0, [r5]
 	b _0811CA16
 _0811C9E8:
-	ldr r0, _0811C9FC @ =gUnknown_2037AB8
+	ldr r0, _0811C9FC @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -593,7 +593,7 @@ _0811C9F4:
 	strh r0, [r5]
 	b _0811CA16
 	.align 2, 0
-_0811C9FC: .4byte gUnknown_2037AB8
+_0811C9FC: .4byte gPaletteFade
 _0811CA00:
 	ldr r0, [r4, 0x4]
 	bl SetMainCallback2
@@ -686,7 +686,7 @@ _0811CAAE:
 	.align 2, 0
 _0811CAD0: .4byte sub_811C6E8
 _0811CAD4:
-	ldr r0, _0811CAF0 @ =gUnknown_2037AB8
+	ldr r0, _0811CAF0 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -700,7 +700,7 @@ _0811CAD4:
 	subs r1, 0xC
 	b _0811CBC6
 	.align 2, 0
-_0811CAF0: .4byte gUnknown_2037AB8
+_0811CAF0: .4byte gPaletteFade
 _0811CAF4:
 	adds r1, r5, 0
 	adds r1, 0x9E
@@ -908,7 +908,7 @@ _0811CC7C:
 	.align 2, 0
 _0811CCA8: .4byte sub_811C6E8
 _0811CCAC:
-	ldr r0, _0811CCBC @ =gUnknown_2037AB8
+	ldr r0, _0811CCBC @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -916,7 +916,7 @@ _0811CCAC:
 	bne _0811CD5A
 	b _0811CD2A
 	.align 2, 0
-_0811CCBC: .4byte gUnknown_2037AB8
+_0811CCBC: .4byte gPaletteFade
 _0811CCC0:
 	adds r0, r5, 0
 	adds r0, 0x9C
@@ -977,7 +977,7 @@ _0811CD2A:
 	.align 2, 0
 _0811CD34: .4byte gMain
 _0811CD38:
-	ldr r0, _0811CD64 @ =gUnknown_2037AB8
+	ldr r0, _0811CD64 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -996,7 +996,7 @@ _0811CD5A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0811CD64: .4byte gUnknown_2037AB8
+_0811CD64: .4byte gPaletteFade
 	thumb_func_end sub_811CBE4
 
 	thumb_func_start sub_811CD68
@@ -1073,7 +1073,7 @@ _0811CDD2:
 	.align 2, 0
 _0811CDFC: .4byte sub_811C6E8
 _0811CE00:
-	ldr r0, _0811CE20 @ =gUnknown_2037AB8
+	ldr r0, _0811CE20 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -1090,7 +1090,7 @@ _0811CE16:
 	strh r0, [r4]
 	b _0811CE3E
 	.align 2, 0
-_0811CE20: .4byte gUnknown_2037AB8
+_0811CE20: .4byte gPaletteFade
 _0811CE24:
 	adds r1, r5, 0
 	adds r1, 0x9E
@@ -1290,7 +1290,7 @@ _0811CFA8:
 	.align 2, 0
 _0811CFC4: .4byte sub_811C6E8
 _0811CFC8:
-	ldr r0, _0811D010 @ =gUnknown_2037AB8
+	ldr r0, _0811D010 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -1323,7 +1323,7 @@ _0811D008:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0811D010: .4byte gUnknown_2037AB8
+_0811D010: .4byte gPaletteFade
 _0811D014: .4byte gUnknown_203B090
 	thumb_func_end sub_811CF88
 
@@ -1508,8 +1508,8 @@ sub_811D120: @ 811D120
 	bx r1
 	thumb_func_end sub_811D120
 
-	thumb_func_start sub_811D130
-sub_811D130: @ 811D130
+	thumb_func_start BufferMonStatsToTaskData
+BufferMonStatsToTaskData: @ 811D130
 	push {r4,r5,lr}
 	adds r4, r0, 0
 	adds r5, r1, 0
@@ -1539,7 +1539,7 @@ sub_811D130: @ 811D130
 	pop {r4,r5}
 	pop {r0}
 	bx r0
-	thumb_func_end sub_811D130
+	thumb_func_end BufferMonStatsToTaskData
 
 	thumb_func_start sub_811D178
 sub_811D178: @ 811D178
@@ -1558,7 +1558,7 @@ sub_811D184: @ 811D184
 	lsls r5, r1, 16
 	lsrs r5, 16
 	bl FreeAllWindowBuffers
-	bl reset_temp_tile_data_buffers
+	bl ResetTempTileDataBuffers
 	movs r0, 0
 	movs r1, 0
 	bl SetGpuReg
@@ -1617,7 +1617,7 @@ sub_811D184: @ 811D184
 	movs r0, 0
 	movs r1, 0
 	movs r2, 0xE0
-	bl sub_815001C
+	bl TextWindow_SetUserSelectedFrame
 	movs r0, 0
 	movs r1, 0x3
 	bl CopyWindowToVram
@@ -1654,7 +1654,7 @@ _0811D27C: .4byte 0x00001914
 	thumb_func_start sub_811D280
 sub_811D280: @ 811D280
 	push {lr}
-	bl free_temp_tile_data_buffers_if_possible
+	bl FreeTempTileDataBuffersIfPossible
 	lsls r0, 24
 	cmp r0, 0
 	beq _0811D290
@@ -1688,7 +1688,7 @@ sub_811D2A8: @ 811D2A8
 	movs r0, 0
 	movs r1, 0x1
 	movs r2, 0xE
-	bl sub_8150048
+	bl DrawTextBorderOuter
 	movs r0, 0
 	movs r1, 0x3
 	bl CopyWindowToVram
@@ -1703,7 +1703,7 @@ sub_811D2D0: @ 811D2D0
 	bl ClearWindowTilemap
 	movs r0, 0
 	movs r1, 0
-	bl sub_810F4D8
+	bl ClearStdWindowAndFrameToTransparent
 	movs r0, 0
 	movs r1, 0x1
 	bl CopyWindowToVram
@@ -1727,7 +1727,7 @@ sub_811D2EC: @ 811D2EC
 	lsrs r7, r0, 16
 	movs r0, 0
 	mov r8, r0
-	bl sub_80F78A8
+	bl GetTextSpeedSetting
 	lsls r0, 24
 	lsrs r0, 24
 	mov r9, r0
@@ -1759,7 +1759,7 @@ _0811D330:
 _0811D358:
 	adds r4, 0x14
 	adds r0, r7, 0
-	bl ItemId_GetItem
+	bl ItemId_GetName
 	adds r1, r0, 0
 	adds r0, r4, 0
 	bl StringCopy
@@ -1815,15 +1815,15 @@ _0811D3C0:
 _0811D3D4: .4byte gUnknown_841B295
 _0811D3D8: .4byte gUnknown_841B2A7
 _0811D3DC:
-	bl UnkTextUtil_Reset
+	bl DynamicPlaceholderTextUtil_Reset
 	bl sub_811D0F4
 	adds r1, r0, 0
 	movs r0, 0
-	bl UnkTextUtil_SetPtrI
+	bl DynamicPlaceholderTextUtil_SetPlaceholderPtr
 	bl sub_811D0D0
 	adds r1, r0, 0
 	movs r0, 0x1
-	bl UnkTextUtil_SetPtrI
+	bl DynamicPlaceholderTextUtil_SetPlaceholderPtr
 	adds r4, 0x14
 	ldr r1, _0811D400 @ =gUnknown_841B32E
 	b _0811D470
@@ -1866,20 +1866,20 @@ _0811D444: .4byte gUnknown_841B2F1
 _0811D448: .4byte gUnknown_841B2ED
 _0811D44C: .4byte gUnknown_8459998
 _0811D450:
-	bl UnkTextUtil_Reset
+	bl DynamicPlaceholderTextUtil_Reset
 	bl sub_811D0F4
 	adds r1, r0, 0
 	movs r0, 0
-	bl UnkTextUtil_SetPtrI
+	bl DynamicPlaceholderTextUtil_SetPlaceholderPtr
 	bl sub_811D0C4
 	adds r1, r0, 0
 	movs r0, 0x1
-	bl UnkTextUtil_SetPtrI
+	bl DynamicPlaceholderTextUtil_SetPlaceholderPtr
 	adds r4, 0x14
 	ldr r1, _0811D478 @ =gUnknown_841B306
 _0811D470:
 	adds r0, r4, 0
-	bl UnkTextUtil_StringExpandPlaceholders
+	bl DynamicPlaceholderTextUtil_ExpandPlaceholders
 	b _0811D4A2
 	.align 2, 0
 _0811D478: .4byte gUnknown_841B306
@@ -1918,7 +1918,7 @@ _0811D4A2:
 	movs r0, 0
 	movs r1, 0x2
 	adds r2, r4, 0
-	bl sub_812E62C
+	bl AddTextPrinterParameterized5
 _0811D4C2:
 	add sp, 0x14
 	pop {r3,r4}
@@ -2020,7 +2020,7 @@ _0811D546:
 	strh r0, [r4]
 	b _0811D594
 _0811D57E:
-	ldr r0, _0811D590 @ =gUnknown_2037AB8
+	ldr r0, _0811D590 @ =gPaletteFade
 	ldrb r1, [r0, 0x7]
 	movs r0, 0x80
 	ands r0, r1
@@ -2029,7 +2029,7 @@ _0811D57E:
 	movs r0, 0
 	b _0811D596
 	.align 2, 0
-_0811D590: .4byte gUnknown_2037AB8
+_0811D590: .4byte gPaletteFade
 _0811D594:
 	movs r0, 0x1
 _0811D596:
@@ -2285,7 +2285,7 @@ sub_811D764: @ 811D764
 	movs r0, 0x1
 	movs r1, 0x1
 	movs r2, 0xE
-	bl sub_8150048
+	bl DrawTextBorderOuter
 	movs r0, 0x2
 	str r0, [sp]
 	movs r0, 0x3
@@ -2294,7 +2294,7 @@ sub_811D764: @ 811D764
 	adds r1, r4, 0
 	adds r2, r5, 0
 	movs r3, 0x1
-	bl sub_811E7F0
+	bl DrawLevelUpWindowPg1
 	movs r0, 0x1
 	bl PutWindowTilemap
 	movs r0, 0x1
@@ -2316,7 +2316,7 @@ sub_811D7A0: @ 811D7A0
 	movs r0, 0x1
 	movs r2, 0x1
 	movs r3, 0x2
-	bl sub_811E93C
+	bl DrawLevelUpWindowPg2
 	movs r0, 0x1
 	movs r1, 0x2
 	bl CopyWindowToVram
@@ -2353,7 +2353,7 @@ sub_811D7D4: @ 811D7D4
 	movs r0, 0x3
 	movs r2, 0
 	movs r3, 0
-	bl decompress_and_copy_tile_data_to_vram
+	bl DecompressAndCopyTileDataToVram
 	cmp r4, 0x4
 	beq _0811D818
 	ldr r0, _0811D814 @ =gUnknown_845963C
@@ -2441,12 +2441,12 @@ _0811D884:
 	cmp r4, 0
 	beq _0811D916
 	lsls r0, r7, 3
-	ldr r1, _0811D900 @ =gUnknown_82350AC
+	ldr r1, _0811D900 @ =gMonFrontPicTable
 	adds r0, r1
 	adds r1, r6, 0
 	adds r2, r7, 0
 	mov r3, r10
-	bl sub_800ECC4
+	bl HandleLoadSpecialPokePic
 	mov r0, r8
 	bl GetMonFrontSpritePal
 	adds r1, r4, 0
@@ -2474,7 +2474,7 @@ _0811D884:
 	bl sub_811DB14
 	b _0811D910
 	.align 2, 0
-_0811D900: .4byte gUnknown_82350AC
+_0811D900: .4byte gMonFrontPicTable
 _0811D904: .4byte gUnknown_8459A30
 _0811D908: .4byte gSprites
 _0811D90C:
@@ -3400,7 +3400,7 @@ sub_811DFC0: @ 811DFC0
 	strh r0, [r3, 0x4]
 	movs r5, 0x4
 	ldrsh r1, [r3, r5]
-	ldr r2, _0811E018 @ =gUnknown_825E074
+	ldr r2, _0811E018 @ =gSineTable
 	movs r5, 0x2
 	ldrsh r0, [r3, r5]
 	adds r0, 0x40
@@ -3424,7 +3424,7 @@ sub_811DFC0: @ 811DFC0
 	strh r0, [r4, 0x26]
 	b _0811E036
 	.align 2, 0
-_0811E018: .4byte gUnknown_825E074
+_0811E018: .4byte gSineTable
 _0811E01C:
 	ldr r2, _0811E03C @ =gTasks
 	movs r5, 0xE
@@ -3699,7 +3699,7 @@ sub_811E204: @ 811E204
 	sub sp, 0x8
 	mov r10, r0
 	ldr r0, _0811E2E0 @ =gUnknown_84599B8
-	bl LoadCompressedObjectPic
+	bl LoadCompressedSpriteSheet
 	ldr r0, _0811E2E4 @ =gUnknown_84599C0
 	bl LoadSpritePalette
 	movs r0, 0
@@ -3958,7 +3958,7 @@ _0811E3E0:
 	lsls r0, 16
 	lsrs r0, 16
 	adds r0, 0x46
-	ldr r3, _0811E4BC @ =gUnknown_825E074
+	ldr r3, _0811E4BC @ =gSineTable
 	movs r4, 0xA
 	ldrsh r2, [r5, r4]
 	adds r1, r2, 0
@@ -4035,7 +4035,7 @@ _0811E4A4:
 	strh r0, [r5]
 	b _0811E4DC
 	.align 2, 0
-_0811E4BC: .4byte gUnknown_825E074
+_0811E4BC: .4byte gSineTable
 _0811E4C0: .4byte gUnknown_8459B30
 _0811E4C4: .4byte gSprites
 _0811E4C8:
@@ -4148,7 +4148,7 @@ _0811E582:
 sub_811E588: @ 811E588
 	push {lr}
 	ldr r0, _0811E59C @ =gUnknown_84599C8
-	bl LoadCompressedObjectPic
+	bl LoadCompressedSpriteSheet
 	ldr r0, _0811E5A0 @ =gUnknown_84599D0
 	bl LoadSpritePalette
 	pop {r0}
@@ -4216,7 +4216,7 @@ sub_811E5B8: @ 811E5B8
 	str r1, [r4]
 	mov r1, r9
 	strh r1, [r4, 0x4]
-	bl LoadCompressedObjectPic
+	bl LoadCompressedSpriteSheet
 	adds r0, r4, 0
 	bl LoadSpritePalette
 	ldr r0, _0811E674 @ =sub_811E694
@@ -4457,8 +4457,8 @@ _0811E7E8:
 _0811E7EC: .4byte gTasks
 	thumb_func_end sub_811E7B4
 
-	thumb_func_start sub_811E7F0
-sub_811E7F0: @ 811E7F0
+	thumb_func_start DrawLevelUpWindowPg1
+DrawLevelUpWindowPg1: @ 811E7F0
 	push {r4-r7,lr}
 	mov r7, r10
 	mov r6, r9
@@ -4548,7 +4548,7 @@ _0811E880:
 	movs r1, 0x2
 	movs r2, 0
 	adds r3, r5, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	lsls r0, r7, 1
 	mov r4, sp
 	adds r4, r0
@@ -4571,7 +4571,7 @@ _0811E8BA:
 	movs r1, 0x2
 	movs r2, 0x38
 	adds r3, r5, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	movs r0, 0
 	strb r0, [r6]
 	movs r0, 0
@@ -4604,7 +4604,7 @@ _0811E8F4:
 	mov r0, r8
 	movs r1, 0x2
 	adds r3, r5, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	adds r0, r7, 0x1
 	lsls r0, 16
 	lsrs r7, r0, 16
@@ -4622,10 +4622,10 @@ _0811E8F4:
 _0811E930: .4byte gUnknown_8459B48
 _0811E934: .4byte gUnknown_841B2E5
 _0811E938: .4byte gUnknown_841B2DC
-	thumb_func_end sub_811E7F0
+	thumb_func_end DrawLevelUpWindowPg1
 
-	thumb_func_start sub_811E93C
-sub_811E93C: @ 811E93C
+	thumb_func_start DrawLevelUpWindowPg2
+DrawLevelUpWindowPg2: @ 811E93C
 	push {r4-r7,lr}
 	mov r7, r10
 	mov r6, r9
@@ -4725,7 +4725,7 @@ _0811E9C0:
 	movs r1, 0x2
 	movs r2, 0
 	adds r3, r5, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	adds r4, 0x38
 	lsls r4, 24
 	lsrs r4, 24
@@ -4739,7 +4739,7 @@ _0811E9C0:
 	movs r1, 0x2
 	adds r2, r4, 0
 	adds r3, r5, 0
-	bl box_print
+	bl AddTextPrinterParameterized3
 	adds r0, r6, 0x1
 	lsls r0, 16
 	lsrs r6, r0, 16
@@ -4755,6 +4755,6 @@ _0811E9C0:
 	bx r0
 	.align 2, 0
 _0811EA40: .4byte gUnknown_8459B48
-	thumb_func_end sub_811E93C
+	thumb_func_end DrawLevelUpWindowPg2
 
 	.align 2, 0 @ Don't pad with nop.

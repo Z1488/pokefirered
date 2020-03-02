@@ -1,7 +1,15 @@
 #ifndef GUARD_M4A_H
 #define GUARD_M4A_H
 
+#include "global.h"
+
 #include "gba/m4a_internal.h"
+
+extern struct MusicPlayerInfo gMPlayInfo_BGM;
+extern struct MusicPlayerInfo gMPlayInfo_SE1;
+extern struct MusicPlayerInfo gMPlayInfo_SE2;
+extern struct MusicPlayerInfo gMPlayInfo_SE3;
+extern struct SoundInfo gSoundInfo;
 
 void m4aSoundVSync(void);
 void m4aSoundVSyncOn(void);

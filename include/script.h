@@ -1,6 +1,8 @@
 #ifndef GUARD_SCRIPT_H
 #define GUARD_SCRIPT_H
 
+#include "global.h"
+
 struct ScriptContext;
 
 typedef bool8 (*ScrCmdFunc)(struct ScriptContext *);
@@ -46,7 +48,7 @@ void ScriptContext2_RunNewScript(const u8 *ptr);
 u8 *mapheader_get_tagged_pointer(u8 tag);
 void mapheader_run_script_by_tag(u8 tag);
 u8 *mapheader_get_first_match_from_tagged_ptr_list(u8 tag);
-void mapheader_run_script_with_tag_x1(void);
+void RunOnLoadMapScript(void);
 void mapheader_run_script_with_tag_x3(void);
 void mapheader_run_script_with_tag_x5(void);
 void mapheader_run_script_with_tag_x7(void);
@@ -60,5 +62,18 @@ u8 *GetRamScript(u8 objectId, u8 *script);
 bool32 sub_80991F8(void);
 u8 *sub_8099244(void);
 void sub_80992A0(u8 *script, u16 scriptSize);
+bool32 ValidateRamScript(void);
+void MEventSetRamScript(u8 * script, u16 scriptSize);
+u8 * sub_8069E48(void);
+void sub_8069998(u8 var);
+void sub_80699F8(void);
+void sub_8069964(void);
+void sub_80699A4(void);
+void sub_8069970(void);
+void sub_8069A20(void);
+void sub_8069A2C(void);
+bool8 IsMsgSignPost(void);
+
+extern const u8 *gRAMScriptPtr;
 
 #endif // GUARD_SCRIPT_H

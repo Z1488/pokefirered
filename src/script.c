@@ -1,15 +1,15 @@
 #include "global.h"
 #include "script.h"
 #include "event_data.h"
+#include "quest_log.h"
 
 #define RAM_SCRIPT_MAGIC 51
 #define SCRIPT_STACK_SIZE 20
 
-extern u8 gUnknown_203ADFA;
 
 extern void sub_80CBDE8(void); // field_specials
 extern u16 CalcCRC16WithTable(u8 *data, int length); // util
-extern bool32 sub_8143FC8(void); // mevent
+extern bool32 ValidateReceivedWonderCard(void); // mevent
 
 enum
 {
@@ -19,20 +19,20 @@ enum
 };
 
 EWRAM_DATA u8 gUnknown_20370A0 = 0;
-EWRAM_DATA u8 *gUnknown_20370A4 = NULL;
+EWRAM_DATA const u8 *gRAMScriptPtr = NULL;
 
 // ewram bss
-IWRAM_DATA static u8 sScriptContext1Status;
-IWRAM_DATA static u32 sUnusedVariable1;
-IWRAM_DATA static struct ScriptContext sScriptContext1;
-IWRAM_DATA static u32 sUnusedVariable2;
-IWRAM_DATA static struct ScriptContext sScriptContext2;
-IWRAM_DATA static bool8 sScriptContext2Enabled;
-IWRAM_DATA static u8 gUnknown_3000F9D;
-IWRAM_DATA static u8 gUnknown_3000F9E;
-IWRAM_DATA static u8 gUnknown_3000F9F;
-IWRAM_DATA static u8 gUnknown_3000FA0;
-IWRAM_DATA static u8 gUnknown_3000FA1;
+/*IWRAM_DATA*/ static u8 sScriptContext1Status;
+/*IWRAM_DATA*/ static u32 sUnusedVariable1;
+/*IWRAM_DATA*/ static struct ScriptContext sScriptContext1;
+/*IWRAM_DATA*/ static u32 sUnusedVariable2;
+/*IWRAM_DATA*/ static struct ScriptContext sScriptContext2;
+/*IWRAM_DATA*/ static bool8 sScriptContext2Enabled;
+/*IWRAM_DATA*/ static u8 gUnknown_3000F9D;
+/*IWRAM_DATA*/ static u8 gUnknown_3000F9E;
+/*IWRAM_DATA*/ static u8 gUnknown_3000F9F;
+/*IWRAM_DATA*/ static u8 gUnknown_3000FA0;
+/*IWRAM_DATA*/ static u8 gUnknown_3000FA1;
 
 extern ScrCmdFunc gScriptCmdTable[];
 extern ScrCmdFunc gScriptCmdTableEnd[];
@@ -279,7 +279,7 @@ void sub_8069A2C(void)
     gUnknown_3000FA1 = 0;
 }
 
-bool8 sub_8069A38(void)
+bool8 IsMsgSignPost(void)
 {
     if(gUnknown_3000FA1 == TRUE)
         return TRUE;
@@ -406,7 +406,7 @@ u8 *mapheader_get_first_match_from_tagged_ptr_list(u8 tag)
     }
 }
 
-void mapheader_run_script_with_tag_x1(void)
+void RunOnLoadMapScript(void)
 {
     mapheader_run_script_by_tag(1);
 }
@@ -435,7 +435,7 @@ bool8 mapheader_run_first_tag2_script_list_match(void)
 {
     u8 *ptr;
 
-    if(gUnknown_203ADFA == 3)
+    if(gQuestLogState == 3)
         return 0;
 
     ptr = mapheader_get_first_match_from_tagged_ptr_list(2);
@@ -485,7 +485,7 @@ bool8 InitRamScript(u8 *script, u16 scriptSize, u8 mapGroup, u8 mapNum, u8 objec
 u8 *GetRamScript(u8 objectId, u8 *script)
 {
     struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-    gUnknown_20370A4 = NULL;
+    gRAMScriptPtr = NULL;
     if (scriptData->magic != RAM_SCRIPT_MAGIC)
         return script;
     if (scriptData->mapGroup != gSaveBlock1Ptr->location.mapGroup)
@@ -501,12 +501,12 @@ u8 *GetRamScript(u8 objectId, u8 *script)
     }
     else
     {
-        gUnknown_20370A4 = script;
+        gRAMScriptPtr = script;
         return scriptData->script;
     }
 }
 
-bool32 sub_8069DFC(void)
+bool32 ValidateRamScript(void)
 {
     struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
     if (scriptData->magic != RAM_SCRIPT_MAGIC)
@@ -525,7 +525,7 @@ bool32 sub_8069DFC(void)
 u8 *sub_8069E48(void)
 {
     struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-    if (!sub_8143FC8())
+    if (!ValidateReceivedWonderCard())
         return NULL;
     if (scriptData->magic != RAM_SCRIPT_MAGIC)
         return NULL;
@@ -546,7 +546,7 @@ u8 *sub_8069E48(void)
     }
 }
 
-void sub_8069EA4(u8 *script, u16 scriptSize)
+void MEventSetRamScript(u8 *script, u16 scriptSize)
 {
     if (scriptSize > sizeof(gSaveBlock1Ptr->ramScript.data.script))
         scriptSize = sizeof(gSaveBlock1Ptr->ramScript.data.script);
